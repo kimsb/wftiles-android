@@ -15,7 +15,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import kimstephenbovim.wordfeudtiles.pojo.Game;
+import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 /**
  * An activity representing a list of Games. This activity

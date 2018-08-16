@@ -1,16 +1,10 @@
-package kimstephenbovim.wordfeudtiles;
+package kimstephenbovim.wordfeudtiles.rest;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.util.List;
 
-import kimstephenbovim.wordfeudtiles.pojo.Game;
-import kimstephenbovim.wordfeudtiles.pojo.GameResponse;
-import kimstephenbovim.wordfeudtiles.pojo.GamesContent;
-import kimstephenbovim.wordfeudtiles.pojo.GamesResponse;
-import kimstephenbovim.wordfeudtiles.pojo.LoginResponse;
-import kimstephenbovim.wordfeudtiles.pojo.LoginWithEmailBody;
-import kimstephenbovim.wordfeudtiles.pojo.LoginWithUsernameBody;
+import kimstephenbovim.wordfeudtiles.AppData;
+import kimstephenbovim.wordfeudtiles.GameListActivity;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -18,6 +12,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+
+import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToGames;
+import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToUser;
 
 public class RestClient {
 
@@ -46,19 +43,19 @@ public class RestClient {
         //Call<LoginResponse> loginResponseCall = restService.loginWithEmail(new LoginWithEmailBody("mail", "cb95625ce12dfcf764915dceb4bf857474eeb01d"));
 
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
-                    @Override
-                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        System.out.println("login success!");
-                        User user =  new User(response.body().getLoginContent(), "loginMethod", "password");
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                System.out.println("login success!");
+                AppData.shared.setUser(mapToUser(response.body().getLoginContent(), "loginMethod", "password"));
 
-                        getGames(gameListActivity);
-                    }
+                getGames(gameListActivity);
+            }
 
-                    @Override
-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        System.out.println("login failure...");
-                    }
-                });
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                System.out.println("login failure...");
+            }
+        });
     }
 
     public static void getGames(final GameListActivity gameListActivity) {
@@ -68,7 +65,7 @@ public class RestClient {
                 System.out.println("getGames success!");
                 GamesContent gamesContent = response.body().getGamesContent();
 
-                gameListActivity.setupRecyclerView(gamesContent.getGames());
+                gameListActivity.setupRecyclerView(mapToGames(gamesContent));
 
                 getGame(gamesContent.getGames().get(0).getId());
             }

@@ -1,4 +1,4 @@
-package kimstephenbovim.wordfeudtiles.pojo;
+package kimstephenbovim.wordfeudtiles.rest;
 
 import com.squareup.moshi.Json;
 
@@ -7,11 +7,11 @@ import java.util.List;
 public class GamesContent {
 
     @Json(name = "games")
-    private List<Game> games = null;
+    private List<GameDTO> games = null;
     @Json(name = "type")
     private String type;
 
-    public List<Game> getGames() {
+    public List<GameDTO> getGames() {
         return games;
     }
 }

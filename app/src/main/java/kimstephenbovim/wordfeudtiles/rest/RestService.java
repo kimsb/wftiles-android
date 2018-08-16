@@ -1,10 +1,10 @@
-package kimstephenbovim.wordfeudtiles;
+package kimstephenbovim.wordfeudtiles.rest;
 
-import kimstephenbovim.wordfeudtiles.pojo.GameResponse;
-import kimstephenbovim.wordfeudtiles.pojo.GamesResponse;
-import kimstephenbovim.wordfeudtiles.pojo.LoginResponse;
-import kimstephenbovim.wordfeudtiles.pojo.LoginWithEmailBody;
-import kimstephenbovim.wordfeudtiles.pojo.LoginWithUsernameBody;
+import kimstephenbovim.wordfeudtiles.rest.GameResponse;
+import kimstephenbovim.wordfeudtiles.rest.GamesResponse;
+import kimstephenbovim.wordfeudtiles.rest.LoginResponse;
+import kimstephenbovim.wordfeudtiles.rest.LoginWithEmailBody;
+import kimstephenbovim.wordfeudtiles.rest.LoginWithUsernameBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

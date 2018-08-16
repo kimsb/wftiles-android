@@ -1,11 +1,11 @@
-package kimstephenbovim.wordfeudtiles.pojo;
+package kimstephenbovim.wordfeudtiles.rest;
 
 import com.squareup.moshi.Json;
 
 public class GameContent {
 
     @Json(name = "game")
-    public Game game;
+    public GameDTO gameDTO;
     @Json(name = "type")
     private String type;
 }

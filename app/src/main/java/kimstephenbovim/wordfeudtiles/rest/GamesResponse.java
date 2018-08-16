@@ -1,4 +1,4 @@
-package kimstephenbovim.wordfeudtiles.pojo;
+package kimstephenbovim.wordfeudtiles.rest;
 
 import com.squareup.moshi.Json;
 

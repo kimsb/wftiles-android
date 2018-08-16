@@ -1,13 +1,13 @@
-package kimstephenbovim.wordfeudtiles.pojo;
+package kimstephenbovim.wordfeudtiles.rest;
 
 import com.squareup.moshi.Json;
 
 import java.util.List;
 
-public class Game {
+public class GameDTO {
 
     @Json(name = "updated")
-    private Integer updated;
+    private long updated;
     @Json(name = "tiles")
     private List<List<Object>> tiles = null;
     @Json(name = "bag_count")
@@ -19,16 +19,15 @@ public class Game {
     @Json(name = "current_player")
     private Integer currentPlayer;
     @Json(name = "created")
-    private Integer created;
+    private long created;
     @Json(name = "last_move")
-    private Move lastMove;
+    private MoveDTO lastMove;
     @Json(name = "players")
-    private List<Player> players = null;
+    private List<PlayerDTO> players = null;
     @Json(name = "ruleset")
     private Integer ruleset;
-    private Player opponent;
 
-    public Integer getUpdated() {
+    public long getUpdated() {
         return updated;
     }
 
@@ -52,23 +51,19 @@ public class Game {
         return currentPlayer;
     }
 
-    public Integer getCreated() {
+    public long getCreated() {
         return created;
     }
 
-    public Move getLastMove() {
+    public MoveDTO getLastMove() {
         return lastMove;
     }
 
-    public List<Player> getPlayers() {
+    public List<PlayerDTO> getPlayers() {
         return players;
     }
 
     public Integer getRuleset() {
         return ruleset;
-    }
-
-    public Player getOpponent() {
-        return opponent;
     }
 }
