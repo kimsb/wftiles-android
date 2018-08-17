@@ -26,4 +26,15 @@ public class Player {
     public List<String> getRack() {
         return rack;
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public String presentableUsername() {
+        if (username.startsWith("_fb_") && fbFirstName != null && !"".equals(fbFirstName)) {
+            return fbFirstName;
+        }
+        return username;
+    }
 }

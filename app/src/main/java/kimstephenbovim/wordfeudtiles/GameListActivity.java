@@ -120,11 +120,11 @@ public class GameListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            //holder.opponentText.setText(gameList.get(position).getOpponent().getUsername());
-            holder.opponentText.setText("motspiller");
-            holder.languageText.setText("norsk");
-            holder.scoreText.setText(Long.toString(gameList.get(position).getId()));
-            holder.lastMoveText.setText("lastMove");
+            Game game = gameList.get(position);
+            holder.opponentText.setText(game.getOpponent().presentableUsername());
+            holder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
+            holder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
+            holder.lastMoveText.setText(game.getLastMoveText());
 
             holder.itemView.setTag(gameList.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);

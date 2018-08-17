@@ -1,11 +1,12 @@
 package kimstephenbovim.wordfeudtiles;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Texts {
 
     public static Texts shared = new Texts();
-    private Map<String, String[]> texts;
+    private Map<String, String[]> texts = new HashMap<>();
     private String[] locales = {"en", "nb", "nl", "da", "sv", "es", "fr", "de", "fi", "pt"};
     private String[] languages = {"englishUS", "norwegianBokmal", "dutch", "danish", "swedish", "englishIntl", "spanish", "french", "swedishStrict",
             "german", "norwegianNynorsk", "finnish", "portuguese"};
@@ -103,29 +104,29 @@ public class Texts {
 
         texts.put("portuguese", new String[]{"Portuguese game", "Portugisisk spill", "Portugees spel", "Spil på portugisisk", "Portugisisk match", "Partida en portugués", "Partie en portugais", "Portugiesisches Spiel", "Portugalinkielinen peli", "Jogo em português"});
 
-        texts.put("youPlayed", new String[]{"You played %@ for %d points", "Du la %@ for %d poeng", "Je hebt %@ gelegd en %d punten behaald", "Du spillede %@ for %d point", "Du spelade %@ för %d poäng", "Has puesto %@ por %d puntos", "Tu as joué %@ pour %d points", "Du hast %@ gespielt und %d Punkte erzielt", "Pelasit sanan %@ ja sait %d pistettä", "Você jogou %@ por %d pontos"});
+        texts.put("youPlayed", new String[]{"You played %s for %d points", "Du la %s for %d poeng", "Je hebt %s gelegd en %d punten behaald", "Du spillede %s for %d point", "Du spelade %s för %d poäng", "Has puesto %s por %d puntos", "Tu as joué %s pour %d points", "Du hast %s gespielt und %d Punkte erzielt", "Pelasit sanan %s ja sait %d pistettä", "Você jogou %s por %d pontos"});
 
-        texts.put("theyPlayed", new String[]{"%@ played %@ for %d points", "%@ la %@ for %d poeng", "%@ heeft %@ gelegd en %d punten behaald", "%@ spillede %@ for %d point", "%@ spelade %@ för %d poäng", "%@ ha puesto %@ por %d puntos", "%@ a joué %@ pour %d points", "%@ hat %@ gespielt und %d Punkte erzielt", "%@ pelasi sanan %@ ja sai %d pistettä", "%@ jogou %@ por %d pontos"});
+        texts.put("theyPlayed", new String[]{"%s played %s for %d points", "%s la %s for %d poeng", "%s heeft %s gelegd en %d punten behaald", "%s spillede %s for %d point", "%s spelade %s för %d poäng", "%s ha puesto %s por %d puntos", "%s a joué %s pour %d points", "%s hat %s gespielt und %d Punkte erzielt", "%s pelasi sanan %s ja sai %d pistettä", "%s jogou %s por %d pontos"});
 
         texts.put("youResigned", new String[]{"You resigned", "Du ga opp", "Je haakte af", "Du gav op", "Du gav upp", "Te has rendido", "Tu as abandonné", "Du hast aufgegeben", "Luovutit", "Você abandonou a partida"});
 
-        texts.put("theyResigned", new String[]{"%@ resigned", "%@ ga opp", "%@ haakte af", "%@ gav op", "%@ gav upp", "%@ se ha rendido", "%@ a abandonné", "%@ hat aufgegeben", "%@ luovutti", "%@ abandonou"});
+        texts.put("theyResigned", new String[]{"%s resigned", "%s ga opp", "%s haakte af", "%s gav op", "%s gav upp", "%s se ha rendido", "%s a abandonné", "%s hat aufgegeben", "%s luovutti", "%s abandonou"});
 
         texts.put("youPassed", new String[]{"You passed", "Du meldte pass", "Je hebt gepast", "Du meldte pas", "Du passade", "Has pasado", "Tu as passé", "Du hast gepasst", "Passasit", "Você passou"});
 
-        texts.put("theyPassed", new String[]{"%@ passed", "%@ meldte pass", "%@ paste", "%@ meldte pas", "%@ passade", "%@ ha pasado", "%@ a passé", "%@ passt", "%@ passasi", "%@ passou"});
+        texts.put("theyPassed", new String[]{"%s passed", "%s meldte pass", "%s paste", "%s meldte pas", "%s passade", "%s ha pasado", "%s a passé", "%s passt", "%s passasi", "%s passou"});
 
         texts.put("youSwapped", new String[]{"You swapped %d tiles", "Du byttet %d brikker", "Je hebt %d letters geruild", "Du byttede %d brikker", "Du bytte ut %d brickor", "Has cambiado %d fichas", "Tu as échangé %d pièces", "Du hast %d Spielsteine getauscht", "Vaihdoit %d laattaa", "Você trocou %d peças"});
 
         texts.put("youSwappedOne", new String[]{"You swapped %d tile", "Du byttet %d brikke", "Je hebt %d letter geruild", "Du byttede %d brikke", "Du bytte ut %d bricka", "Has cambiado %d ficha", "Tu as échangé %d pièce", "Du hast %d Spielstein getauscht", "Vaihdoit %d laatan", "Você trocou %d peça"});
 
-        texts.put("theySwapped", new String[]{"%@ swapped %d tiles", "%@ byttet %d brikker", "%@ heeft %d letters geruild", "%@ byttede %d brikker", "%@ bytte ut %d brickor", "%@ ha cambiado %d fichas", "%@ a échangé %d pièces", "%@ hat %d Spielsteine getauscht", "%@ vaihtoi %d laattaa", "%@ trocou %d peças"});
+        texts.put("theySwapped", new String[]{"%s swapped %d tiles", "%s byttet %d brikker", "%s heeft %d letters geruild", "%s byttede %d brikker", "%s bytte ut %d brickor", "%s ha cambiado %d fichas", "%s a échangé %d pièces", "%s hat %d Spielsteine getauscht", "%s vaihtoi %d laattaa", "%s trocou %d peças"});
 
-        texts.put("theySwappedOne", new String[]{"%@ swapped %d tile", "%@ byttet %d brikke", "%@ heeft %d letter geruild", "%@ byttede %d brikke", "%@ bytte ut %d bricka", "%@ ha cambiado %d ficha", "%@ a échangé %d pièce", "%@ hat %d Spielstein getauscht", "%@ vaihtoi %d laatan", "%@ trocou %d peça"});
+        texts.put("theySwappedOne", new String[]{"%s swapped %d tile", "%s byttet %d brikke", "%s heeft %d letter geruild", "%s byttede %d brikke", "%s bytte ut %d bricka", "%s ha cambiado %d ficha", "%s a échangé %d pièce", "%s hat %d Spielstein getauscht", "%s vaihtoi %d laatan", "%s trocou %d peça"});
 
-        texts.put("firstMoveYou", new String[]{"It's your turn against %@", "Det er din tur mot %@", "Het is jouw beurt tegen %@", "Det er din tur mod %@", "Det är din tur mot %@", "Te toca jugar contra %@", "C'est ton tour contre %@", "Du bist dran gegen %@", "%@ odottaa - on sinun vuorosi", "É sua vez contra %@"});
+        texts.put("firstMoveYou", new String[]{"It's your turn against %s", "Det er din tur mot %s", "Het is jouw beurt tegen %s", "Det er din tur mod %s", "Det är din tur mot %s", "Te toca jugar contra %s", "C'est ton tour contre %s", "Du bist dran gegen %s", "%s odottaa - on sinun vuorosi", "É sua vez contra %s"});
 
-        texts.put("firstMoveThem", new String[]{"Waiting for %@ to make a move", "Venter på et trekk fra %@", "Wacht op een zet van %@", "Venter på, at %@ foretager et træk", "Vänter på att %@ ska göra ett drag", "Esperando a que %@ mueva ficha", "En attente d'un coup de %@", "Warten auf Zug von %@", "Odotetaan, että %@ tekee siirtonsa", "Esperando que %@ faça um movimento"});
+        texts.put("firstMoveThem", new String[]{"Waiting for %s to make a move", "Venter på et trekk fra %s", "Wacht op een zet van %s", "Venter på, at %s foretager et træk", "Vänter på att %s ska göra ett drag", "Esperando a que %s mueva ficha", "En attente d'un coup de %s", "Warten auf Zug von %s", "Odotetaan, että %s tekee siirtonsa", "Esperando que %s faça um movimento"});
 
         texts.put("yourTiles", new String[]{"Your tiles", "Dine brikker", "Jouw letters", "Dine brikker", "Dina brickor", "Tus fichas", "Vos pièces", "Deine Spielsteine", "Teidän laatat", "Suas peças"});
 

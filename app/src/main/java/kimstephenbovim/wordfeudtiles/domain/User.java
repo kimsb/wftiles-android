@@ -27,4 +27,13 @@ public class User {
     public long getId() {
         return id;
     }
+
+    public String presentableFullUsername() {
+        if (username.startsWith("_fb_") && fb_first_name != null &&  !"".equals(fb_first_name)) {
+            return fb_first_name +
+                    (fb_middle_name == null ? "" : " " + fb_middle_name) +
+                    (fb_last_name == null ? "" : " " + fb_last_name);
+        }
+        return username;
+    }
 }

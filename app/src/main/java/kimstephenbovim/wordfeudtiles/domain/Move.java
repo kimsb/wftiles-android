@@ -18,4 +18,20 @@ public class Move {
     public String getMainWord() {
         return mainWord;
     }
+
+    public String getMoveType() {
+        return moveType;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public Integer getTileCount() {
+        return tileCount;
+    }
 }
