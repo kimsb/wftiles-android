@@ -36,4 +36,8 @@ public class User {
         }
         return username;
     }
+
+    public String getAvatarRoot() {
+        return avatarRoot;
+    }
 }

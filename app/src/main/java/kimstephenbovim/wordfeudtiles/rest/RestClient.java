@@ -18,23 +18,19 @@ import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToUser;
 
 public class RestClient {
 
-    private static Retrofit retrofit;
     private static final String BASE_URL = "https://api.wordfeud.com/wf/";
     private static RestService restService = getClient().create(RestService.class);
 
     private static Retrofit getClient() {
-        if (retrofit == null) {
-            CookieManager cookieManager = new CookieManager();
-            cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().cookieJar(new JavaNetCookieJar(cookieManager)).build();
+        CookieManager cookieManager = new CookieManager();
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().cookieJar(new JavaNetCookieJar(cookieManager)).build();
 
-            retrofit = new retrofit2.Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(MoshiConverterFactory.create())
-                    .client(okHttpClient)
-                    .build();
-        }
-        return retrofit;
+        return new retrofit2.Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(MoshiConverterFactory.create())
+                .client(okHttpClient)
+                .build();
     }
 
     public static void login(final GameListActivity gameListActivity) {

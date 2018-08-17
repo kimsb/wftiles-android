@@ -11,7 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -121,6 +124,11 @@ public class GameListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             Game game = gameList.get(position);
+
+            Glide.with(this.parentActivity)
+                    .load(AppData.shared.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                    .into(holder.opponentImageView);
+
             holder.opponentText.setText(game.getOpponent().presentableUsername());
             holder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
             holder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
@@ -136,6 +144,7 @@ public class GameListActivity extends AppCompatActivity {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
+            final ImageView opponentImageView;
             final TextView opponentText;
             final TextView languageText;
             final TextView scoreText;
@@ -143,6 +152,7 @@ public class GameListActivity extends AppCompatActivity {
 
             ViewHolder(View view) {
                 super(view);
+                opponentImageView = view.findViewById(R.id.opponentImageView);
                 opponentText = view.findViewById(R.id.opponentText);
                 languageText = view.findViewById(R.id.languageText);
                 scoreText = view.findViewById(R.id.scoreText);

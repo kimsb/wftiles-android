@@ -1,10 +1,5 @@
 package kimstephenbovim.wordfeudtiles.rest;
 
-import kimstephenbovim.wordfeudtiles.rest.GameResponse;
-import kimstephenbovim.wordfeudtiles.rest.GamesResponse;
-import kimstephenbovim.wordfeudtiles.rest.LoginResponse;
-import kimstephenbovim.wordfeudtiles.rest.LoginWithEmailBody;
-import kimstephenbovim.wordfeudtiles.rest.LoginWithUsernameBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

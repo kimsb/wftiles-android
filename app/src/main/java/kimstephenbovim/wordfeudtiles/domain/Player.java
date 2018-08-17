@@ -37,4 +37,8 @@ public class Player {
         }
         return username;
     }
+
+    public long getId() {
+        return id;
+    }
 }
