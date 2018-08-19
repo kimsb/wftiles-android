@@ -42,9 +42,9 @@ public class Mapper {
                 gameDTO.getRuleset());
     }
 
-    static List<Game> mapToGames(final GamesContent gamesContent) {
+    static List<Game> mapToGames(final List<GameDTO> gameDTOs) {
         ArrayList<Game> games = new ArrayList<>();
-        for (GameDTO gameDTO : gamesContent.getGames()) {
+        for (GameDTO gameDTO : gameDTOs) {
             games.add(mapToGame(gameDTO));
         }
         return games;
@@ -57,7 +57,8 @@ public class Mapper {
                 playerDTO.getAvatarUpdated(),
                 playerDTO.getFbFirstName(),
                 playerDTO.getFbMiddleName(),
-                playerDTO.getFbLastName());
+                playerDTO.getFbLastName(),
+                playerDTO.getRack());
     }
 
     static Move mapToMove(final MoveDTO moveDTO) {

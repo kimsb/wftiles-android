@@ -16,10 +16,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
+
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 
 /**
  * An activity representing a list of Games. This activity
@@ -36,6 +43,7 @@ public class GameListActivity extends AppCompatActivity {
      * device.
      */
     private boolean isTwoPane;
+    private List<Game> games;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +71,7 @@ public class GameListActivity extends AppCompatActivity {
             isTwoPane = true;
         }
 
-        //View recyclerView = findViewById(R.id.game_list);
-        //assert recyclerView != null;
-        //setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView(AppData.shared.getGames());
 
         //TEST Rest-kall
         RestClient.login(this);
@@ -73,7 +79,9 @@ public class GameListActivity extends AppCompatActivity {
 
 
 
-    public void setupRecyclerView(List<Game> gameList) {//@NonNull RecyclerView recyclerView) {
+    public void setupRecyclerView(List<Game> gameList) {
+        System.out.println("setupRecyclerView called");
+        games = gameList;
         RecyclerView recyclerView = findViewById(R.id.game_list);
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, gameList, isTwoPane));
     }
@@ -90,7 +98,7 @@ public class GameListActivity extends AppCompatActivity {
                 Game game = (Game) view.getTag();
                 if (isTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putLong("GAME_ID", game.getId());
+                    arguments.putLong(MESSAGE_GAME_ID, game.getId());
                     GameDetailFragment fragment = new GameDetailFragment();
                     fragment.setArguments(arguments);
                     parentActivity.getSupportFragmentManager().beginTransaction()
@@ -99,7 +107,7 @@ public class GameListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, GameDetailActivity.class);
-                    intent.putExtra("GAME_ID", game.getId());
+                    intent.putExtra(MESSAGE_GAME_ID, game.getId());
 
                     context.startActivity(intent);
                 }
@@ -157,6 +165,39 @@ public class GameListActivity extends AppCompatActivity {
                 languageText = view.findViewById(R.id.languageText);
                 scoreText = view.findViewById(R.id.scoreText);
                 lastMoveText = view.findViewById(R.id.lastMoveText);
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
+        //TODO refactor game-comparings + all compare-logic outside main thread
+        List<Game> loadedGames = gamesLoadedEvent.getGames();
+        System.out.println("In Activity, recieved Event for " + loadedGames.size() + " games: ");
+        //if any new -> update view
+        if (loadedGames.size() != games.size()) {
+            setupRecyclerView(loadedGames);
+        } else {
+            for (Game storedGame : games) {
+                for (Game loadedGame : loadedGames) {
+                    if (storedGame.getId() == loadedGame.getId() &&
+                            storedGame.getUpdated() != loadedGame.getUpdated()) {
+                        setupRecyclerView(loadedGames);
+                        return;
+                    }
+                }
             }
         }
     }

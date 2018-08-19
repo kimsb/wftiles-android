@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 
 /**
  * An activity representing a single Game detail screen. This
@@ -54,8 +56,8 @@ public class GameDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putLong("GAME_ID",
-                    getIntent().getLongExtra("GAME_ID", 0));
+            arguments.putLong(MESSAGE_GAME_ID,
+                    getIntent().getLongExtra(MESSAGE_GAME_ID, 0));
             GameDetailFragment fragment = new GameDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

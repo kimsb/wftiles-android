@@ -9,7 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
+import kimstephenbovim.wordfeudtiles.rest.RestClient;
+
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 
 /**
  * A fragment representing a single Game detail screen.
@@ -19,10 +27,8 @@ import kimstephenbovim.wordfeudtiles.domain.Game;
  */
 public class GameDetailFragment extends Fragment {
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
     private Game game;
+    private long gameId;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -35,20 +41,16 @@ public class GameDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey("GAME_ID")) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
+        gameId = getArguments().getLong(MESSAGE_GAME_ID);
+        game = AppData.shared.getGame(gameId);
 
-
-            //TODO: finn ut av denne - nå er den bare kommentert ut
-            //game = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+        if (getArguments().containsKey(MESSAGE_GAME_ID)) {
+            RestClient.getGame(gameId);
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                //appBarLayout.setTitle(game.getOpponent().getUsername());
-                appBarLayout.setTitle(Long.toString(getArguments().getLong("GAME_ID")));
+                appBarLayout.setTitle(Long.toString(gameId));
             }
         }
     }
@@ -64,5 +66,24 @@ public class GameDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(GameLoadedEvent gameLoadedEvent) {
+        System.out.println("In fragment, recieved Event for gameId: " + gameLoadedEvent.getGame().getId());
+        System.out.println("Remaining Tiles: " + gameLoadedEvent.getGame().getLetterCount());
+        //updateView();
     }
 }

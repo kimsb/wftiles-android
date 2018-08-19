@@ -95,4 +95,16 @@ public class Game {
                 return "";
         }
     }
+
+    public Map<String, Integer> getLetterCount() {
+        return letterCount;
+    }
+
+    public long getUpdated() {
+        return updated;
+    }
+
+    public void setLetterCount(Map<String, Integer> letterCount) {
+        this.letterCount = letterCount;
+    }
 }

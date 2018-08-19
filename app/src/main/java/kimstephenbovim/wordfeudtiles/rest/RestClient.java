@@ -1,10 +1,16 @@
 package kimstephenbovim.wordfeudtiles.rest;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.AppData;
 import kimstephenbovim.wordfeudtiles.GameListActivity;
+import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
+import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -13,6 +19,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
+import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToGame;
 import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToGames;
 import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToUser;
 
@@ -44,11 +51,13 @@ public class RestClient {
                 System.out.println("login success!");
                 AppData.shared.setUser(mapToUser(response.body().getLoginContent(), "loginMethod", "password"));
 
+                //TODO LoginEvent
                 getGames(gameListActivity);
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                //TODO: feilhåndtering ved feil passord/brukernavn
                 System.out.println("login failure...");
             }
         });
@@ -59,15 +68,15 @@ public class RestClient {
             @Override
             public void onResponse(Call<GamesResponse> call, Response<GamesResponse> response) {
                 System.out.println("getGames success!");
-                GamesContent gamesContent = response.body().getGamesContent();
+                List<Game> games = mapToGames(response.body().getGamesContent().getGames());
 
-                gameListActivity.setupRecyclerView(mapToGames(gamesContent));
-
-                getGame(gamesContent.getGames().get(0).getId());
+                AppData.shared.setGames(games);
+                EventBus.getDefault().post(new GamesLoadedEvent(games));
             }
 
             @Override
             public void onFailure(Call<GamesResponse> call, Throwable t) {
+                //TODO: feilhåndtering ved krav om login
                 System.out.println("getGames failure...");
             }
         });
@@ -77,11 +86,17 @@ public class RestClient {
         restService.getGame(gameId).enqueue(new Callback<GameResponse>() {
             @Override
             public void onResponse(Call<GameResponse> call, Response<GameResponse> response) {
+
+                Game game = mapToGame(response.body().getGameContent().getGameDTO());
+
+                AppData.shared.setGame(game);
+                EventBus.getDefault().post(new GameLoadedEvent(game));
                 System.out.println("getGame success");
             }
 
             @Override
             public void onFailure(Call<GameResponse> call, Throwable t) {
+                //TODO: feilhåndtering ved krav om login
                 System.out.println("getGame failure...");
             }
         });

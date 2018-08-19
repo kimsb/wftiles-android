@@ -1,6 +1,5 @@
 package kimstephenbovim.wordfeudtiles.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
@@ -11,9 +10,10 @@ public class Player {
     private String fbFirstName;
     private String fbMiddleName;
     private String fbLastName;
-    private List<String> rack = new ArrayList<>();
+    private List<String> rack;
 
-    public Player(String username, long id, int score, long avatarUpdated, String fbFirstName, String fbMiddleName, String fbLastName) {
+    public Player(String username, long id, int score, long avatarUpdated,
+                  String fbFirstName, String fbMiddleName, String fbLastName, List<String> rack) {
         this.username = username;
         this.id = id;
         this.score = score;
@@ -21,6 +21,7 @@ public class Player {
         this.fbFirstName = fbFirstName;
         this.fbMiddleName = fbMiddleName;
         this.fbLastName = fbLastName;
+        this.rack = rack;
     }
 
     public List<String> getRack() {
