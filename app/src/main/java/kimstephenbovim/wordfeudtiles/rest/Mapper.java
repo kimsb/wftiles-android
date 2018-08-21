@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kimstephenbovim.wordfeudtiles.AppData;
 import kimstephenbovim.wordfeudtiles.Constants;
 import kimstephenbovim.wordfeudtiles.Texts;
+import kimstephenbovim.wordfeudtiles.WFTiles;
 import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.domain.Move;
 import kimstephenbovim.wordfeudtiles.domain.Player;
@@ -16,10 +16,10 @@ import kimstephenbovim.wordfeudtiles.domain.User;
 public class Mapper {
 
     static Game mapToGame(final GameDTO gameDTO) {
-        boolean playersTurn = gameDTO.getPlayers().get(gameDTO.getCurrentPlayer()).getId() == AppData.shared.getUser().getId();
+        boolean playersTurn = gameDTO.getPlayers().get(gameDTO.getCurrentPlayer()).getId() == WFTiles.instance.getUser().getId();
 
         Player loggedInPlayer, opponent;
-        if (gameDTO.getPlayers().get(0).getId() == AppData.shared.getUser().getId()) {
+        if (gameDTO.getPlayers().get(0).getId() == WFTiles.instance.getUser().getId()) {
             loggedInPlayer = mapToPlayer(gameDTO.getPlayers().get(0));
             opponent = mapToPlayer(gameDTO.getPlayers().get(1));
         } else {

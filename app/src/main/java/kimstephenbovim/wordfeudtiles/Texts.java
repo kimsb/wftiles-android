@@ -48,8 +48,8 @@ public class Texts {
         return 1;
     }
     /*func getLocaleIndex() -> Int {
-        if (AppData.shared.preferredLanguageIndex() != nil) {
-            return AppData.shared.preferredLanguageIndex()!
+        if (WFTiles.instance.preferredLanguageIndex() != nil) {
+            return WFTiles.instance.preferredLanguageIndex()!
         }
         var preferredLanguage = NSLocale.preferredLanguages[0]
         if preferredLanguage.contains("-") {

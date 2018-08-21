@@ -6,8 +6,8 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.List;
 
-import kimstephenbovim.wordfeudtiles.AppData;
 import kimstephenbovim.wordfeudtiles.GameListActivity;
+import kimstephenbovim.wordfeudtiles.WFTiles;
 import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
@@ -49,7 +49,7 @@ public class RestClient {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 System.out.println("login success!");
-                AppData.shared.setUser(mapToUser(response.body().getLoginContent(), "loginMethod", "password"));
+                WFTiles.instance.setUser(mapToUser(response.body().getLoginContent(), "loginMethod", "password"));
 
                 //TODO LoginEvent
                 getGames(gameListActivity);
@@ -67,11 +67,20 @@ public class RestClient {
         restService.getGames().enqueue(new Callback<GamesResponse>() {
             @Override
             public void onResponse(Call<GamesResponse> call, Response<GamesResponse> response) {
-                System.out.println("getGames success!");
-                List<Game> games = mapToGames(response.body().getGamesContent().getGames());
 
-                AppData.shared.setGames(games);
-                EventBus.getDefault().post(new GamesLoadedEvent(games));
+                if ("error".equals(response.body().getStatus())) {
+                    System.out.println("getGames feiler med: " + response.body().getGamesContent().getType());
+                    if ("login_required".equals(response.body().getGamesContent().getType())) {
+                        login(gameListActivity);
+                    }
+                } else {
+
+                    System.out.println("getGames success!");
+                    List<Game> games = mapToGames(response.body().getGamesContent().getGames());
+
+                    WFTiles.instance.setGames(games);
+                    EventBus.getDefault().post(new GamesLoadedEvent(games));
+                }
             }
 
             @Override
@@ -89,7 +98,7 @@ public class RestClient {
 
                 Game game = mapToGame(response.body().getGameContent().getGameDTO());
 
-                AppData.shared.setGame(game);
+                WFTiles.instance.setGame(game);
                 EventBus.getDefault().post(new GameLoadedEvent(game));
                 System.out.println("getGame success");
             }

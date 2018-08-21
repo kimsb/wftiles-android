@@ -42,7 +42,7 @@ public class GameDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         gameId = getArguments().getLong(MESSAGE_GAME_ID);
-        game = AppData.shared.getGame(gameId);
+        game = WFTiles.instance.getGame(gameId);
 
         if (getArguments().containsKey(MESSAGE_GAME_ID)) {
             RestClient.getGame(gameId);

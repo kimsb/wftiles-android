@@ -71,10 +71,9 @@ public class GameListActivity extends AppCompatActivity {
             isTwoPane = true;
         }
 
-        setupRecyclerView(AppData.shared.getGames());
+        setupRecyclerView(WFTiles.instance.getGames());
 
-        //TEST Rest-kall
-        RestClient.login(this);
+        RestClient.getGames(this);
     }
 
 
@@ -134,7 +133,7 @@ public class GameListActivity extends AppCompatActivity {
             Game game = gameList.get(position);
 
             Glide.with(this.parentActivity)
-                    .load(AppData.shared.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                    .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
                     .into(holder.opponentImageView);
 
             holder.opponentText.setText(game.getOpponent().presentableUsername());

@@ -37,7 +37,7 @@ public class Constants {
             return new String[0];
         }
         //TODO
-        /*if AppData.shared.sortByVowels() {
+        /*if WFTiles.instance.sortByVowels() {
             return letters[ruleset]
         }*/
 

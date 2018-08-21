@@ -14,4 +14,8 @@ public class GamesContent {
     public List<GameDTO> getGames() {
         return games;
     }
+
+    public String getType() {
+        return type;
+    }
 }

@@ -2,8 +2,8 @@ package kimstephenbovim.wordfeudtiles.domain;
 
 import java.util.Map;
 
-import kimstephenbovim.wordfeudtiles.AppData;
 import kimstephenbovim.wordfeudtiles.Texts;
+import kimstephenbovim.wordfeudtiles.WFTiles;
 
 public class Game {
     private long updated;
@@ -61,20 +61,20 @@ public class Game {
         }
         switch (lastMove.getMoveType()) {
             case "move":
-                if (lastMove.getUserId() == AppData.shared.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
                     return String.format(Texts.shared.getText("youPlayed"), lastMove.getMainWord(), lastMove.getPoints());
                 } else {
                     return String.format(Texts.shared.getText("theyPlayed"), opponentName, lastMove.getMainWord(), lastMove.getPoints());
                 }
             case "pass":
-                if (lastMove.getUserId() == AppData.shared.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
                     return Texts.shared.getText("youPassed");
                 } else {
                     return String.format(Texts.shared.getText("theyPassed"), opponentName);
 
                 }
             case "swap":
-                if (lastMove.getUserId() == AppData.shared.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
                     if (lastMove.getTileCount() == 1) {
                         return String.format(Texts.shared.getText("youSwappedOne"), lastMove.getTileCount());
                     }
@@ -86,7 +86,7 @@ public class Game {
                     return String.format(Texts.shared.getText("theySwapped"), opponentName, lastMove.getTileCount());
                 }
             case "resign":
-                if (lastMove.getUserId() == AppData.shared.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
                     return Texts.shared.getText("youResigned");
                 } else {
                     return String.format(Texts.shared.getText("theyResigned"), opponentName);
