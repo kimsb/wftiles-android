@@ -24,6 +24,7 @@ import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
+import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
@@ -73,7 +74,7 @@ public class GameListActivity extends AppCompatActivity {
 
         setupRecyclerView(WFTiles.instance.getGames());
 
-        RestClient.getGames(this);
+        RestClient.getGames();
     }
 
 
@@ -199,5 +200,10 @@ public class GameListActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onMessageEvent(LoginEvent loginEvent) {
+        RestClient.getGames();
     }
 }

@@ -16,6 +16,7 @@ import kimstephenbovim.wordfeudtiles.domain.User;
 public class WFTiles extends Application {
 
     private static String INERTNAL_USER = "internal_user";
+    private static String INTERNAL_GAMES = "internal_games";
 
     public static WFTiles instance;
     private User user;
@@ -41,6 +42,13 @@ public class WFTiles extends Application {
     }
 
     public List<Game> getGames() {
+        if (games.isEmpty()) {
+            Object readObject = readFromFile(INTERNAL_GAMES);
+            if (readObject instanceof List) {
+                games = (List) readObject;
+                System.out.println("Gets games from internal storage");
+            }
+        }
         return games;
     }
 
@@ -63,6 +71,7 @@ public class WFTiles extends Application {
             }
         }
         games = mostRecent;
+        writeToFile(INTERNAL_GAMES, games);
     }
 
     public void setGame(Game game) {
@@ -71,6 +80,7 @@ public class WFTiles extends Application {
                     && game.getUpdated() >= storedGame.getUpdated()) {
                 storedGame.setLetterCount(game.getLetterCount());
                 System.out.println("Store letterCount for game against: " + game.getOpponent().presentableUsername());
+                writeToFile(INTERNAL_GAMES, games);
                 break;
             }
         }

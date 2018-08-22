@@ -6,11 +6,11 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.List;
 
-import kimstephenbovim.wordfeudtiles.GameListActivity;
 import kimstephenbovim.wordfeudtiles.WFTiles;
 import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
+import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -40,7 +40,7 @@ public class RestClient {
                 .build();
     }
 
-    public static void login(final GameListActivity gameListActivity) {
+    public static void login() {
 
         Call<LoginResponse> loginResponseCall = restService.loginWithUsername(new LoginWithUsernameBody("furtoad", "cb95625ce12dfcf764915dceb4bf857474eeb01d"));
         //Call<LoginResponse> loginResponseCall = restService.loginWithEmail(new LoginWithEmailBody("mail", "cb95625ce12dfcf764915dceb4bf857474eeb01d"));
@@ -51,8 +51,7 @@ public class RestClient {
                 System.out.println("login success!");
                 WFTiles.instance.setUser(mapToUser(response.body().getLoginContent(), "loginMethod", "password"));
 
-                //TODO LoginEvent
-                getGames(gameListActivity);
+                EventBus.getDefault().post(new LoginEvent());
             }
 
             @Override
@@ -63,7 +62,7 @@ public class RestClient {
         });
     }
 
-    public static void getGames(final GameListActivity gameListActivity) {
+    public static void getGames() {
         restService.getGames().enqueue(new Callback<GamesResponse>() {
             @Override
             public void onResponse(Call<GamesResponse> call, Response<GamesResponse> response) {
@@ -71,7 +70,7 @@ public class RestClient {
                 if ("error".equals(response.body().getStatus())) {
                     System.out.println("getGames feiler med: " + response.body().getGamesContent().getType());
                     if ("login_required".equals(response.body().getGamesContent().getType())) {
-                        login(gameListActivity);
+                        login();
                     }
                 } else {
 

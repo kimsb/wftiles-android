@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
+import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
@@ -85,5 +86,10 @@ public class GameDetailFragment extends Fragment {
         System.out.println("In fragment, recieved Event for gameId: " + gameLoadedEvent.getGame().getId());
         System.out.println("Remaining Tiles: " + gameLoadedEvent.getGame().getLetterCount());
         //updateView();
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onMessageEvent(LoginEvent loginEvent) {
+        RestClient.getGame(gameId);
     }
 }

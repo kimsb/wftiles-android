@@ -1,11 +1,12 @@
 package kimstephenbovim.wordfeudtiles.domain;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import kimstephenbovim.wordfeudtiles.Texts;
 import kimstephenbovim.wordfeudtiles.WFTiles;
 
-public class Game {
+public class Game implements Serializable {
     private long updated;
     private Map<String, Integer> letterCount;
     private boolean isRunning;

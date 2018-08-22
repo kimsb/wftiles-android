@@ -1,8 +1,9 @@
 package kimstephenbovim.wordfeudtiles.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Player {
+public class Player implements Serializable {
     private String username;
     private long id;
     private int score;
