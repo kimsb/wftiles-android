@@ -49,7 +49,7 @@ public class GameDetailActivity extends AppCompatActivity {
             GameDetailFragment fragment = new GameDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.game_detail_container, fragment)
+                    .add(R.id.game_detail_container, fragment, "her_er_min_tag")
                     .commit();
         }
     }

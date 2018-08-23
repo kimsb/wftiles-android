@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,10 +64,21 @@ public class GameDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (game != null) {
-            ((TextView) rootView.findViewById(R.id.game_detail)).setText(game.getLastMove().getMainWord());
+            System.out.println("I Fragment, setter: " + game.getLetterCount().toString());
+            ((TextView) rootView.findViewById(R.id.game_detail)).setText(game.getLetterCount().toString());
         }
 
         return rootView;
+    }
+
+    private void updateView() {
+        // Reload current fragment
+        Fragment frg = null;
+        frg = getActivity().getSupportFragmentManager().findFragmentByTag("her_er_min_tag");
+        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commit();
     }
 
     @Override
@@ -83,9 +95,8 @@ public class GameDetailFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GameLoadedEvent gameLoadedEvent) {
-        System.out.println("In fragment, recieved Event for gameId: " + gameLoadedEvent.getGame().getId());
-        System.out.println("Remaining Tiles: " + gameLoadedEvent.getGame().getLetterCount());
-        //updateView();
+        System.out.println("I Fragment, updater: " + game.getLetterCount().toString());
+        updateView();
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

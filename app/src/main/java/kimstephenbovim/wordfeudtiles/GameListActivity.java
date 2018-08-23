@@ -91,7 +91,7 @@ public class GameListActivity extends AppCompatActivity {
                     GameDetailFragment fragment = new GameDetailFragment();
                     fragment.setArguments(arguments);
                     parentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.game_detail_container, fragment)
+                            .replace(R.id.game_detail_container, fragment, "her_er_min_tag")
                             .commit();
                 } else {
                     Context context = view.getContext();
