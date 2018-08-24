@@ -1,6 +1,8 @@
 package kimstephenbovim.wordfeudtiles.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import kimstephenbovim.wordfeudtiles.Texts;
@@ -16,6 +18,7 @@ public class Game implements Serializable {
     private Player player;
     private Player opponent;
     private int ruleset;
+    //private List<String> remainingLetters;
     //private int bagCount;
     //private long created;
 
@@ -107,5 +110,16 @@ public class Game implements Serializable {
 
     public void setLetterCount(Map<String, Integer> letterCount) {
         this.letterCount = letterCount;
+    }
+
+    public List<String> getRemainingLetters() {
+        ArrayList<String> remainingLetters = new ArrayList<>();
+        //TODO dette må gjøres så brikkene kommer i riktig rekkefølge
+        for (Map.Entry<String, Integer> entry : letterCount.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                remainingLetters.add(entry.getKey());
+            }
+        }
+        return remainingLetters;
     }
 }
