@@ -9,6 +9,7 @@ import kimstephenbovim.wordfeudtiles.Constants;
 import kimstephenbovim.wordfeudtiles.Texts;
 import kimstephenbovim.wordfeudtiles.WFTiles;
 import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.domain.GameRow;
 import kimstephenbovim.wordfeudtiles.domain.Move;
 import kimstephenbovim.wordfeudtiles.domain.Player;
 import kimstephenbovim.wordfeudtiles.domain.User;
@@ -108,5 +109,36 @@ public class Mapper {
             }
         }
         return usedLetters;
+    }
+
+    public static List<GameRow> mapGamesToGameRows(List<Game> games) {
+        ArrayList<GameRow> yourTurn = new ArrayList<>();
+        ArrayList<GameRow> theirTurn = new ArrayList<>();
+        ArrayList<GameRow> finished = new ArrayList<>();
+
+        for (Game game : games) {
+            if (!game.getIsRunning()) {
+                finished.add(new GameRow(game));
+            } else {
+                if (game.getPlayersTurn()) {
+                    yourTurn.add(new GameRow(game));
+                } else {
+                    theirTurn.add(new GameRow(game));
+                }
+            }
+        }
+        if (!yourTurn.isEmpty()) {
+            yourTurn.add(0, new GameRow("YOUR TURN"));
+        }
+        if (!theirTurn.isEmpty()) {
+            theirTurn.add(0, new GameRow("THEIR TURN"));
+        }
+        if (!finished.isEmpty()) {
+            finished.add(0, new GameRow("FINISHED"));
+        }
+        ArrayList<GameRow> gameRows = new ArrayList<>(yourTurn);
+        gameRows.addAll(theirTurn);
+        gameRows.addAll(finished);
+        return gameRows;
     }
 }

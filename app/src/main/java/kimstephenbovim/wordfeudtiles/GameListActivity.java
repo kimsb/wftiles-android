@@ -21,11 +21,14 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.domain.GameRow;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
+import kimstephenbovim.wordfeudtiles.rest.Mapper;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
+import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
 
 /**
  * An activity representing a list of Games. This activity
@@ -67,24 +70,24 @@ public class GameListActivity extends AppCompatActivity {
     }
 
 
-
-    public void setupRecyclerView(List<Game> gameList) {
+    public void setupRecyclerView(List<Game> games) {
         System.out.println("setupRecyclerView called");
-        games = gameList;
+        this.games = games;
         RecyclerView recyclerView = findViewById(R.id.game_list);
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, gameList, isTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, Mapper.mapGamesToGameRows(games), isTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+            extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private final GameListActivity parentActivity;
-        private final List<Game> gameList;
+        private final List<GameRow> gameRows;
         private final boolean isTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Game game = (Game) view.getTag();
+                GameRow gameRow = (GameRow) view.getTag();
+                Game game = gameRow.getGame();
                 if (isTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putLong(MESSAGE_GAME_ID, game.getId());
@@ -104,50 +107,74 @@ public class GameListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(GameListActivity parent,
-                                      List<Game> games,
+                                      List<GameRow> gameRows,
                                       boolean twoPane) {
-            gameList = games;
+            this.gameRows = gameRows;
             parentActivity = parent;
             isTwoPane = twoPane;
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.game_list_content, parent, false);
-            return new ViewHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == HEADER.ordinal()) {
+                return new HeaderViewHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_header, parent, false));
+            }
+            return new GameViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.game_list_content, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            Game game = gameList.get(position);
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+            GameRow gameRow = gameRows.get(position);
+            if (gameRow.getGameRowType().equals(HEADER)) {
+                HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+                headerViewHolder.headerText.setText(gameRow.getHeaderTitle());
+            } else {
+                GameViewHolder gameViewHolder = (GameViewHolder) holder;
+                Game game = gameRow.getGame();
 
-            Glide.with(this.parentActivity)
-                    .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
-                    .into(holder.opponentImageView);
+                Glide.with(this.parentActivity)
+                        .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                        .into(gameViewHolder.opponentImageView);
 
-            holder.opponentText.setText(game.getOpponent().presentableUsername());
-            holder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
-            holder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
-            holder.lastMoveText.setText(game.getLastMoveText());
+                gameViewHolder.opponentText.setText(game.getOpponent().presentableUsername());
+                gameViewHolder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
+                gameViewHolder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
+                gameViewHolder.lastMoveText.setText(game.getLastMoveText());
 
-            holder.itemView.setTag(gameList.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
+                holder.itemView.setOnClickListener(mOnClickListener);
+            }
+            holder.itemView.setTag(gameRows.get(position));
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return gameRows.get(position).getGameRowType().ordinal();
         }
 
         @Override
         public int getItemCount() {
-            return gameList.size();
+            return gameRows.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        class HeaderViewHolder extends RecyclerView.ViewHolder {
+            final TextView headerText;
+
+            HeaderViewHolder(View view) {
+                super(view);
+                headerText = view.findViewById(R.id.headerText);
+            }
+        }
+
+        class GameViewHolder extends RecyclerView.ViewHolder {
             final ImageView opponentImageView;
             final TextView opponentText;
             final TextView languageText;
             final TextView scoreText;
             final TextView lastMoveText;
 
-            ViewHolder(View view) {
+            GameViewHolder(View view) {
                 super(view);
                 opponentImageView = view.findViewById(R.id.opponentImageView);
                 opponentText = view.findViewById(R.id.opponentText);

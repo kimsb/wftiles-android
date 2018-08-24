@@ -122,4 +122,12 @@ public class Game implements Serializable {
         }
         return remainingLetters;
     }
+
+    public boolean getIsRunning() {
+        return isRunning;
+    }
+
+    public boolean getPlayersTurn() {
+        return playersTurn;
+    }
 }
