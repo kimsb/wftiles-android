@@ -19,9 +19,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
-import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToGame;
-import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToGames;
-import static kimstephenbovim.wordfeudtiles.rest.Mapper.mapToUser;
+import static kimstephenbovim.wordfeudtiles.Mapper.mapToGame;
+import static kimstephenbovim.wordfeudtiles.Mapper.mapToGames;
+import static kimstephenbovim.wordfeudtiles.Mapper.mapToUser;
 
 public class RestClient {
 

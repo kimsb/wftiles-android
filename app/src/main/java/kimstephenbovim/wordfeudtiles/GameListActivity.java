@@ -24,7 +24,6 @@ import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.domain.GameRow;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
-import kimstephenbovim.wordfeudtiles.rest.Mapper;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
@@ -118,7 +117,7 @@ public class GameListActivity extends AppCompatActivity {
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if (viewType == HEADER.ordinal()) {
                 return new HeaderViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_header, parent, false));
+                        .inflate(R.layout.game_list_header, parent, false));
             }
             return new GameViewHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.game_list_content, parent, false));
@@ -197,7 +196,7 @@ public class GameListActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
         //TODO refactor game-comparings + all compare-logic outside main thread
         List<Game> loadedGames = gamesLoadedEvent.getGames();

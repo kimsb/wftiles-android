@@ -1,22 +1,26 @@
-package kimstephenbovim.wordfeudtiles.rest;
+package kimstephenbovim.wordfeudtiles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kimstephenbovim.wordfeudtiles.Constants;
-import kimstephenbovim.wordfeudtiles.Texts;
-import kimstephenbovim.wordfeudtiles.WFTiles;
 import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.domain.GameDetailItem;
 import kimstephenbovim.wordfeudtiles.domain.GameRow;
 import kimstephenbovim.wordfeudtiles.domain.Move;
 import kimstephenbovim.wordfeudtiles.domain.Player;
 import kimstephenbovim.wordfeudtiles.domain.User;
+import kimstephenbovim.wordfeudtiles.rest.GameDTO;
+import kimstephenbovim.wordfeudtiles.rest.LoginContent;
+import kimstephenbovim.wordfeudtiles.rest.MoveDTO;
+import kimstephenbovim.wordfeudtiles.rest.PlayerDTO;
+
+import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.TILE;
 
 public class Mapper {
 
-    static Game mapToGame(final GameDTO gameDTO) {
+    public static Game mapToGame(final GameDTO gameDTO) {
         boolean playersTurn = gameDTO.getPlayers().get(gameDTO.getCurrentPlayer()).getId() == WFTiles.instance.getUser().getId();
 
         Player loggedInPlayer, opponent;
@@ -43,7 +47,7 @@ public class Mapper {
                 gameDTO.getRuleset());
     }
 
-    static List<Game> mapToGames(final List<GameDTO> gameDTOs) {
+    public static List<Game> mapToGames(final List<GameDTO> gameDTOs) {
         ArrayList<Game> games = new ArrayList<>();
         for (GameDTO gameDTO : gameDTOs) {
             games.add(mapToGame(gameDTO));
@@ -63,14 +67,16 @@ public class Mapper {
     }
 
     static Move mapToMove(final MoveDTO moveDTO) {
-        return new Move(moveDTO.getPoints(),
+        return moveDTO == null
+                ? null
+                : new Move(moveDTO.getPoints(),
                 moveDTO.getMoveType(),
                 moveDTO.getUserId(),
                 moveDTO.getMainWord(),
                 moveDTO.getTileCount());
     }
 
-    static User mapToUser(final LoginContent loginContent, final String password, final String loginMethod) {
+    public static User mapToUser(final LoginContent loginContent, final String password, final String loginMethod) {
         return new User(loginContent.getUsername(),
                 loginContent.getEmail(),
                 password,
@@ -140,5 +146,13 @@ public class Mapper {
         gameRows.addAll(theirTurn);
         gameRows.addAll(finished);
         return gameRows;
+    }
+
+    public static List<GameDetailItem> mapStringsToGameDetailItems(final List<String> strings) {
+        ArrayList<GameDetailItem> gameDetailItems = new ArrayList<>();
+        for (String string : strings) {
+            gameDetailItems.add(new GameDetailItem(TILE, string));
+        }
+        return gameDetailItems;
     }
 }

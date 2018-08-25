@@ -2,7 +2,6 @@ package kimstephenbovim.wordfeudtiles;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,7 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -20,11 +22,16 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.domain.GameDetailItem;
 import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
+import static kimstephenbovim.wordfeudtiles.Mapper.mapStringsToGameDetailItems;
+import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.HEADER;
+import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.SECTIONHEADER;
+import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.TILE;
 
 /**
  * A fragment representing a single Game detail screen.
@@ -53,12 +60,6 @@ public class GameDetailFragment extends Fragment {
 
         if (getArguments().containsKey(MESSAGE_GAME_ID)) {
             RestClient.getGame(gameId);
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(Long.toString(gameId));
-            }
         }
     }
 
@@ -76,13 +77,28 @@ public class GameDetailFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 8);
         recyclerView.setLayoutManager(gridLayoutManager);
 
+
         // this is data fro recycler view
 
 
         // 3. create an adapter
-        TileRecyclerViewAdapter tileRecyclerViewAdapter = new TileRecyclerViewAdapter(game);
+        final GameDetailItemRecyclerViewAdapter gameDetailItemRecyclerViewAdapter = new GameDetailItemRecyclerViewAdapter(getActivity(), game);
+
+        // for setting the right span for headers
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                //this must return max spansize
+                if (gameDetailItemRecyclerViewAdapter.getItemViewType(position) == TILE.ordinal()) {
+                    return 1;
+                } else {
+                    return 8;
+                }
+            }
+        });
+
         // 4. set adapter
-        recyclerView.setAdapter(tileRecyclerViewAdapter);
+        recyclerView.setAdapter(gameDetailItemRecyclerViewAdapter);
         // 5. set item animator to DefaultAnimator
         //trens denne?
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -91,51 +107,111 @@ public class GameDetailFragment extends Fragment {
         return recyclerView;
     }
 
-    public static class TileRecyclerViewAdapter
-            extends RecyclerView.Adapter<GameDetailFragment.TileRecyclerViewAdapter.ViewHolder> {
+    public static class GameDetailItemRecyclerViewAdapter
+            extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        //private final GameListActivity parentActivity;
-        private final List<String> remainingLetters;
+        private final Activity parentActivity;
+        private final List<GameDetailItem> gameDetailItems;
         private final Game game;
 
-        TileRecyclerViewAdapter(Game game) {
-            this.remainingLetters = game.getRemainingLetters();
+        GameDetailItemRecyclerViewAdapter(Activity parentActivity, Game game) {
+            this.parentActivity = parentActivity;
+            //TODO refactor, this is ugly
+            List<GameDetailItem> rackTiles = mapStringsToGameDetailItems(game.getPlayer().getRack());
+            rackTiles.add(0, new GameDetailItem(SECTIONHEADER, "YOUR TILES"));
+            rackTiles.add(0, new GameDetailItem(HEADER, "BOGUS"));
+            List<GameDetailItem> letterTiles = mapStringsToGameDetailItems(game.getRemainingLetters());
+            letterTiles.add(0, new GameDetailItem(SECTIONHEADER, "REMAINING TILES"));
+            rackTiles.addAll(letterTiles);
+            gameDetailItems = rackTiles;
+
             this.game = game;
             //parentActivity = parent;
         }
 
         @Override
-        public GameDetailFragment.TileRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.tile_view, parent, false);
-            return new GameDetailFragment.TileRecyclerViewAdapter.ViewHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == HEADER.ordinal()) {
+                return new HeaderViewHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.game_detail_header, parent, false));
+            }
+            else if (viewType == SECTIONHEADER.ordinal()) {
+                return new SectionHeaderViewHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.game_detail_section_header, parent, false));
+            } else {
+                return new TileViewHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.tile_view, parent, false));
+            }
         }
 
         @Override
-        public void onBindViewHolder(final GameDetailFragment.TileRecyclerViewAdapter.ViewHolder holder, int position) {
-            String letter = remainingLetters.get(position);
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+            GameDetailItem gameDetailItem = gameDetailItems.get(position);
+            if (gameDetailItem.getGameDetailType().equals(HEADER)) {
+                HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
 
-            holder.letterText.setText(letter);
-            int score = Constants.shared.getPoints(game.getRuleset()).get(letter);
-            holder.scoreText.setText(score > 0 ? String.valueOf(score) : "");
-
+                Glide.with(parentActivity)
+                        .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                        .into(headerViewHolder.opponentImage);
+                headerViewHolder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
+                headerViewHolder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
+                headerViewHolder.lastMoveText.setText(game.getLastMoveText());
+            }
+            else if (gameDetailItem.getGameDetailType().equals(SECTIONHEADER)) {
+                SectionHeaderViewHolder sectionHeaderViewHolder = (SectionHeaderViewHolder) holder;
+                sectionHeaderViewHolder.sectionHeaderText.setText(gameDetailItem.getItemText());
+            } else {
+                TileViewHolder tileViewHolder = (TileViewHolder) holder;
+                tileViewHolder.letterText.setText(gameDetailItem.getItemText());
+                int score = Constants.shared.getPoints(game.getRuleset()).get(gameDetailItem.getItemText());
+                tileViewHolder.scoreText.setText(score > 0 ? String.valueOf(score) : "");
+            }
             //usikker på denne? vil jo bli lik for mange
-            holder.itemView.setTag(remainingLetters.get(position));
+            holder.itemView.setTag(gameDetailItems.get(position));
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return gameDetailItems.get(position).getGameDetailType().ordinal();
         }
 
         @Override
         public int getItemCount() {
-            return remainingLetters.size();
+            return gameDetailItems.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        class TileViewHolder extends RecyclerView.ViewHolder {
             final TextView letterText;
             final TextView scoreText;
 
-            ViewHolder(View view) {
+            TileViewHolder(View view) {
                 super(view);
                 letterText = view.findViewById(R.id.letter);
                 scoreText = view.findViewById(R.id.score);
+            }
+        }
+
+        class HeaderViewHolder extends RecyclerView.ViewHolder {
+            final ImageView opponentImage;
+            final TextView languageText;
+            final TextView scoreText;
+            final TextView lastMoveText;
+
+            HeaderViewHolder(View view) {
+                super(view);
+                opponentImage = view.findViewById(R.id.headerOpponentImageView);
+                languageText = view.findViewById(R.id.headerLanguageTextView);
+                scoreText = view.findViewById(R.id.headerScoreTextView);
+                lastMoveText = view.findViewById(R.id.headerLastMoveTextView);
+            }
+        }
+
+        class SectionHeaderViewHolder extends RecyclerView.ViewHolder {
+            final TextView sectionHeaderText;
+
+            SectionHeaderViewHolder(View view) {
+                super(view);
+                sectionHeaderText = view.findViewById(R.id.detailSectionHeaderTextView);
             }
         }
     }
@@ -162,7 +238,7 @@ public class GameDetailFragment extends Fragment {
         super.onStop();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(GameLoadedEvent gameLoadedEvent) {
         System.out.println("I Fragment, updater: " + game.getLetterCount().toString());
         updateView();
