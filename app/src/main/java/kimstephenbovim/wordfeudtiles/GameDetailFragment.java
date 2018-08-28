@@ -27,6 +27,7 @@ import kimstephenbovim.wordfeudtiles.domain.GameDetailItem;
 import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
+import kimstephenbovim.wordfeudtiles.util.ListSpacingDecoration;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Mapper.mapStringsToGameDetailItems;
@@ -78,15 +79,15 @@ public class GameDetailFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 8);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-
-        // this is data fro recycler view
-
+        int spanCount = 8; // 3 columns
+        int spacing = 10; // 50px
+        boolean includeEdge = false;
+        recyclerView.addItemDecoration(new ListSpacingDecoration(spacing));
 
         // 3. create an adapter
         final GameDetailItemRecyclerViewAdapter gameDetailItemRecyclerViewAdapter = new GameDetailItemRecyclerViewAdapter(getActivity(), game);
 
-        // for setting the right span for headers
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        GridLayoutManager.SpanSizeLookup spanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 //this must return max spansize
@@ -96,7 +97,10 @@ public class GameDetailFragment extends Fragment {
                     return 8;
                 }
             }
-        });
+        };
+        spanSizeLookup.setSpanIndexCacheEnabled(true);
+        // for setting the right span for headers
+        gridLayoutManager.setSpanSizeLookup(spanSizeLookup);
 
         // 4. set adapter
         recyclerView.setAdapter(gameDetailItemRecyclerViewAdapter);
