@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -135,6 +136,7 @@ public class GameListActivity extends AppCompatActivity {
 
                 Glide.with(this.parentActivity)
                         .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                        .apply(RequestOptions.circleCropTransform())
                         .into(gameViewHolder.opponentImageView);
 
                 gameViewHolder.opponentText.setText(game.getOpponent().presentableUsername());

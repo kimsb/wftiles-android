@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -152,6 +153,7 @@ public class GameDetailFragment extends Fragment {
 
                 Glide.with(parentActivity)
                         .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                        .apply(RequestOptions.circleCropTransform())
                         .into(headerViewHolder.opponentImage);
                 headerViewHolder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
                 headerViewHolder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
