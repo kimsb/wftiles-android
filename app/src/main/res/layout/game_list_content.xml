@@ -71,4 +71,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:color/background_light" />
 
+    <TextView
+        android:id="@+id/diffLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:text="TextView"
+        android:textColor="@color/textColor"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="@+id/opponentImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

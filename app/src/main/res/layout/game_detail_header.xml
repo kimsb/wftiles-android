@@ -52,4 +52,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/headerOpponentImageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/headerOpponentImageView" />
+
+    <TextView
+        android:id="@+id/headerDiffLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:text="TextView"
+        android:textColor="@color/textColor"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="@+id/headerOpponentImageView"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

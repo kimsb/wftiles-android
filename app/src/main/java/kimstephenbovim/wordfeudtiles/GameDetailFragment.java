@@ -184,6 +184,18 @@ public class GameDetailFragment extends Fragment {
                         .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
                         .apply(RequestOptions.circleCropTransform())
                         .into(headerViewHolder.opponentImage);
+
+                int diff = game.getPlayer().getScore() - game.getOpponent().getScore();
+                String diffText = (diff > 0 ? "+" : "") + diff;
+                headerViewHolder.diffLabel.setText(diffText);
+                if (diff > 0) {
+                    headerViewHolder.diffLabel.setBackgroundResource(R.drawable.green_diff);
+                } else if (diff < 0) {
+                    headerViewHolder.diffLabel.setBackgroundResource(R.drawable.red_diff);
+                } else {
+                    headerViewHolder.diffLabel.setBackgroundResource(R.drawable.yellow_diff);
+                }
+
                 headerViewHolder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
                 headerViewHolder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
                 headerViewHolder.lastMoveText.setText(game.getLastMoveText());
@@ -241,6 +253,7 @@ public class GameDetailFragment extends Fragment {
 
         class HeaderViewHolder extends RecyclerView.ViewHolder {
             final ImageView opponentImage;
+            final TextView diffLabel;
             final TextView languageText;
             final TextView scoreText;
             final TextView lastMoveText;
@@ -248,6 +261,7 @@ public class GameDetailFragment extends Fragment {
             HeaderViewHolder(View view) {
                 super(view);
                 opponentImage = view.findViewById(R.id.headerOpponentImageView);
+                diffLabel = view.findViewById(R.id.headerDiffLabel);
                 languageText = view.findViewById(R.id.headerLanguageTextView);
                 scoreText = view.findViewById(R.id.headerScoreTextView);
                 lastMoveText = view.findViewById(R.id.headerLastMoveTextView);

@@ -167,7 +167,16 @@ public class GameListActivity extends AppCompatActivity {
                         .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
                         .apply(RequestOptions.circleCropTransform())
                         .into(gameViewHolder.opponentImageView);
-
+                int diff = game.getPlayer().getScore() - game.getOpponent().getScore();
+                String diffText = (diff > 0 ? "+" : "") + diff;
+                gameViewHolder.diffLabel.setText(diffText);
+                if (diff > 0) {
+                    gameViewHolder.diffLabel.setBackgroundResource(R.drawable.green_diff);
+                } else if (diff < 0) {
+                    gameViewHolder.diffLabel.setBackgroundResource(R.drawable.red_diff);
+                } else {
+                    gameViewHolder.diffLabel.setBackgroundResource(R.drawable.yellow_diff);
+                }
                 gameViewHolder.opponentText.setText(game.getOpponent().presentableUsername());
                 gameViewHolder.languageText.setText(Texts.shared.getGameLanguage(game.getRuleset()));
                 gameViewHolder.scoreText.setText(String.format("%d - %d", game.getPlayer().getScore(), game.getOpponent().getScore()));
@@ -199,6 +208,7 @@ public class GameListActivity extends AppCompatActivity {
 
         class GameViewHolder extends RecyclerView.ViewHolder {
             final ImageView opponentImageView;
+            final TextView diffLabel;
             final TextView opponentText;
             final TextView languageText;
             final TextView scoreText;
@@ -207,6 +217,7 @@ public class GameListActivity extends AppCompatActivity {
             GameViewHolder(View view) {
                 super(view);
                 opponentImageView = view.findViewById(R.id.opponentImageView);
+                diffLabel = view.findViewById(R.id.diffLabel);
                 opponentText = view.findViewById(R.id.opponentText);
                 languageText = view.findViewById(R.id.languageText);
                 scoreText = view.findViewById(R.id.scoreText);

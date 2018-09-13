@@ -6,4 +6,7 @@
     <color name="tileColor">#fbfbf1</color>
     <color name="textColor">#000000</color>
     <color name="lineColor">#d4d4d4</color>
+    <color name="yellowDiff">#fcf097</color>
+    <color name="redDiff">#e09d98</color>
+    <color name="greenDiff">#9ee5b2</color>
 </resources>
