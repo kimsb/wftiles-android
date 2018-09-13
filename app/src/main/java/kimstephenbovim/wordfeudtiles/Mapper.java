@@ -135,13 +135,13 @@ public class Mapper {
             }
         }
         if (!yourTurn.isEmpty()) {
-            yourTurn.add(0, new GameRow("YOUR TURN"));
+            yourTurn.add(0, new GameRow(Texts.shared.getText("yourTurn")));
         }
         if (!theirTurn.isEmpty()) {
-            theirTurn.add(0, new GameRow("THEIR TURN"));
+            theirTurn.add(0, new GameRow(Texts.shared.getText("opponentsTurn")));
         }
         if (!finished.isEmpty()) {
-            finished.add(0, new GameRow("FINISHED"));
+            finished.add(0, new GameRow(Texts.shared.getText("finishedGames")));
         }
         ArrayList<GameRow> gameRows = new ArrayList<>(yourTurn);
         gameRows.addAll(theirTurn);
