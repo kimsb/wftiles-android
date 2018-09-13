@@ -138,12 +138,13 @@ public class GameDetailFragment extends Fragment {
             this.parentActivity = parentActivity;
             //TODO refactor, this is ugly
             List<GameDetailItem> rackTiles = mapStringsToTileItems(game.getPlayer().getRack());
-            rackTiles.add(0, new GameDetailItem(SECTIONHEADER, "YOUR TILES"));
+            rackTiles.add(0, new GameDetailItem(SECTIONHEADER, Texts.shared.getText("yourTiles")));
             rackTiles.add(0, new GameDetailItem(HEADER, "BOGUS"));
             List<GameDetailItem> letterTiles = summary
                     ? getTileSummaryItems(game.getRuleset())
                     : mapStringsToTileItems(game.getRemainingLetters());
-            letterTiles.add(0, new GameDetailItem(SECTIONHEADER, "REMAINING TILES"));
+            int inBag = Math.max(0, game.getRemainingLetters().size() - 7);
+            letterTiles.add(0, new GameDetailItem(SECTIONHEADER, String.format(Texts.shared.getText("remainingTiles"), inBag)));
             rackTiles.addAll(letterTiles);
             gameDetailItems = rackTiles;
 
