@@ -83,7 +83,7 @@ public class GameDetailFragment extends Fragment {
         DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
         int dpWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
 
-        boolean summary = true;
+        boolean summary = false;
 
         int dpTileSize = 40;
         int dpMinMargin = 8;

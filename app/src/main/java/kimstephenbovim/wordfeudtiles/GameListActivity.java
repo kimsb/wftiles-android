@@ -3,10 +3,14 @@ package kimstephenbovim.wordfeudtiles;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -52,9 +56,23 @@ public class GameListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
+
+        // Show the Up button in the action bar.
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername());
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        //findViewById(R.id.app_toolbar_title);
+        //toolbar.setTitle(getTitle());
+
+        /*Glide.with(this)
+                .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + WFTiles.instance.getUser().getId())
+                .apply(RequestOptions.circleCropTransform())
+                .into((ImageView) findViewById(R.id.app_toolbar_image));*/
 
         if (findViewById(R.id.game_detail_container) != null) {
             // The detail container view will be present only in the
@@ -69,6 +87,17 @@ public class GameListActivity extends AppCompatActivity {
         RestClient.getGames();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 
     public void setupRecyclerView(List<Game> games) {
         System.out.println("setupRecyclerView called");
