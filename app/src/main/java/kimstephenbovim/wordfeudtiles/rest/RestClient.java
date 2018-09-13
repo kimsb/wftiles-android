@@ -42,7 +42,7 @@ public class RestClient {
 
     public static void login() {
 
-        Call<LoginResponse> loginResponseCall = restService.loginWithUsername(new LoginWithUsernameBody("furtoad", "cb95625ce12dfcf764915dceb4bf857474eeb01d"));
+        Call<LoginResponse> loginResponseCall = restService.loginWithUsername(new LoginWithUsernameBody("moomin85", "f5efa36b1fe6763fc936fd92569bb7e0ad1ae986"));
         //Call<LoginResponse> loginResponseCall = restService.loginWithEmail(new LoginWithEmailBody("mail", "cb95625ce12dfcf764915dceb4bf857474eeb01d"));
 
         loginResponseCall.enqueue(new Callback<LoginResponse>() {

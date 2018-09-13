@@ -17,6 +17,7 @@ import kimstephenbovim.wordfeudtiles.rest.MoveDTO;
 import kimstephenbovim.wordfeudtiles.rest.PlayerDTO;
 
 import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.TILE;
+import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.TILE_SUMMARY;
 
 public class Mapper {
 
@@ -148,10 +149,19 @@ public class Mapper {
         return gameRows;
     }
 
-    public static List<GameDetailItem> mapStringsToGameDetailItems(final List<String> strings) {
+    public static List<GameDetailItem> mapStringsToTileItems(final List<String> strings) {
         ArrayList<GameDetailItem> gameDetailItems = new ArrayList<>();
         for (String string : strings) {
             gameDetailItems.add(new GameDetailItem(TILE, string));
+        }
+        return gameDetailItems;
+    }
+
+    public static List<GameDetailItem> getTileSummaryItems(final int ruleset) {
+        ArrayList<GameDetailItem> gameDetailItems = new ArrayList<>();
+        String[] letters = Constants.shared.getLetters(ruleset);
+        for (String letter : letters) {
+            gameDetailItems.add(new GameDetailItem(TILE_SUMMARY, letter));
         }
         return gameDetailItems;
     }

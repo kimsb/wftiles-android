@@ -2,48 +2,87 @@ package kimstephenbovim.wordfeudtiles.util;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.DimenRes;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.DisplayMetrics;
 import android.view.View;
 
-public class ListSpacingDecoration extends RecyclerView.ItemDecoration {
+public class TileGridSpacingDecoration extends RecyclerView.ItemDecoration {
 
     private static final int VERTICAL = OrientationHelper.VERTICAL;
 
-    private int orientation = -1;
-    private int spanCount = -1;
-    private int spacing;
-    private int halfSpacing;
+    Context context;
+    int span;
+    int pxSpacing;
+    int pxExtraMargin;
 
 
     //TODO burde jeg bruke denne?
-    public ListSpacingDecoration(Context context, @DimenRes int spacingDimen) {
-        spacing = context.getResources().getDimensionPixelSize(spacingDimen);
-        halfSpacing = spacing / 2;
-    }
+    public TileGridSpacingDecoration(Context context) {
 
-    public ListSpacingDecoration(int spacingPx) {
+        this.context = context;
 
-        spacing = spacingPx;
-        halfSpacing = spacing / 2;
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+
+        //Brukes height som width når device er i landscape?
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        int dpWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
+
+        int dpTileSize = 40;
+        int dpMinMargin = 8;
+        int dpMinSpacing = 3;
+
+        int availableSpace = dpWidth - dpMinMargin - dpMinMargin + dpMinSpacing;
+
+        span = availableSpace / (dpTileSize + dpMinSpacing);
+        int dpSpacing = dpMinSpacing + (availableSpace % (dpTileSize + dpMinSpacing) / (span - 1));
+        float dpExtraMargin = (availableSpace - ((dpTileSize + dpSpacing) * span)) / 2f;
+        pxSpacing = Math.round(dpSpacing * displayMetrics.density);
+        pxExtraMargin = Math.round(dpExtraMargin * displayMetrics.density);
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        int position = parent.getChildAdapterPosition(view); // item position
+        //int column = position % span; // item column
+
+        //denne må settes
+        int rackCount = 7;
+
+        if (position == 0 || position == 1 || position == rackCount + 2) {
+            System.out.println("RETURNERER PGA IKKE TILE");
+            return;
+        }
+
+        outRect.top = pxSpacing;
+        if ((rackCount > 0 && position == 2) || (position > rackCount + 2 && (position - rackCount) % span == 3)) {
+            System.out.println("position: " + position + ", legger til extraMargin");
+            outRect.left = pxExtraMargin;
+        } else {
+            outRect.left = pxSpacing;
+        }
+
+        /*if (includeEdge) {
+            outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+            outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+            if (position < spanCount) { // top edge
+                outRect.top = spacing;
+            }
+            outRect.bottom = spacing; // item bottom
+        } else {*/
+            /*outRect.left = column * pxSpacing / span; // column * ((1f / spanCount) * spacing)
+            outRect.right = pxSpacing - (column + 1) * pxSpacing / span; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+            if (position >= span) {
+                outRect.top = pxSpacing; // item top
+            }*/
+        //}
+    }
+
+    /*@Override
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
         super.getItemOffsets(outRect, view, parent, state);
-
-        if (orientation == -1) {
-            orientation = getOrientation(parent);
-        }
-
-        if (spanCount == -1) {
-            spanCount = getTotalSpan(parent);
-        }
 
         int childCount = parent.getLayoutManager().getItemCount();
         int childIndex = parent.getChildAdapterPosition(view);
@@ -51,37 +90,16 @@ public class ListSpacingDecoration extends RecyclerView.ItemDecoration {
         int itemSpanSize = getItemSpanSize(parent, childIndex);
         int spanIndex = getItemSpanIndex(parent, childIndex);
 
-        /* INVALID SPAN */
-        if (spanCount < 1) return;
-
-        setSpacings(outRect, parent, childCount, childIndex, itemSpanSize, spanIndex);
+        //setSpacings(outRect, parent, childCount, childIndex, itemSpanSize, spanIndex);
     }
 
     protected void setSpacings(Rect outRect, RecyclerView parent, int childCount, int childIndex, int itemSpanSize, int spanIndex) {
 
-        outRect.top = halfSpacing;
-        outRect.bottom = halfSpacing;
-        outRect.left = halfSpacing;
-        outRect.right = halfSpacing;
+        outRect.top = pxSpacing;
+        outRect.left = spanIndex == 0 ? 0 : pxSpacing;
+    }*/
 
-        if (isTopEdge(parent, childCount, childIndex, itemSpanSize, spanIndex)) {
-            outRect.top = spacing;
-        }
-
-        if (isLeftEdge(parent, childCount, childIndex, itemSpanSize, spanIndex)) {
-            outRect.left = spacing;
-        }
-
-        if (isRightEdge(parent, childCount, childIndex, itemSpanSize, spanIndex)) {
-            outRect.right = spacing;
-        }
-
-        if (isBottomEdge(parent, childCount, childIndex, itemSpanSize, spanIndex)) {
-            outRect.bottom = spacing;
-        }
-    }
-
-    @SuppressWarnings("all")
+    /*@SuppressWarnings("all")
     protected int getTotalSpan(RecyclerView parent) {
 
         RecyclerView.LayoutManager mgr = parent.getLayoutManager();
@@ -94,9 +112,9 @@ public class ListSpacingDecoration extends RecyclerView.ItemDecoration {
         }
 
         return -1;
-    }
+    }*/
 
-    @SuppressWarnings("all")
+    /*@SuppressWarnings("all")
     protected int getItemSpanSize(RecyclerView parent, int childIndex) {
 
         RecyclerView.LayoutManager mgr = parent.getLayoutManager();
@@ -211,5 +229,5 @@ public class ListSpacingDecoration extends RecyclerView.ItemDecoration {
         }
 
         return isOneOfLastItems && (totalSpanRemaining <= spanCount - spanIndex);
-    }
+    }*/
 }
