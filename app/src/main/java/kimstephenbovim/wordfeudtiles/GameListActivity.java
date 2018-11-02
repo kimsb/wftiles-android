@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +30,7 @@ import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
 import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
 
 /**
@@ -88,13 +87,6 @@ public class GameListActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
@@ -120,6 +112,7 @@ public class GameListActivity extends AppCompatActivity {
                 if (isTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putLong(MESSAGE_GAME_ID, game.getId());
+                    arguments.putString(MESSAGE_OPPONENT_NAME, game.getOpponent().presentableUsername());
                     GameDetailFragment fragment = new GameDetailFragment();
                     fragment.setArguments(arguments);
                     parentActivity.getSupportFragmentManager().beginTransaction()
@@ -129,6 +122,7 @@ public class GameListActivity extends AppCompatActivity {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, GameDetailActivity.class);
                     intent.putExtra(MESSAGE_GAME_ID, game.getId());
+                    intent.putExtra(MESSAGE_OPPONENT_NAME, game.getOpponent().presentableUsername());
 
                     context.startActivity(intent);
                 }

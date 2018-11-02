@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
 
 /**
  * An activity representing a single Game detail screen. This
@@ -28,6 +29,7 @@ public class GameDetailActivity extends AppCompatActivity {
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setTitle(getIntent().getStringExtra(MESSAGE_OPPONENT_NAME));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 

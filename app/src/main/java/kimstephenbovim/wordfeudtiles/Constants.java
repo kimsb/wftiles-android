@@ -10,7 +10,7 @@ public class Constants {
 
     public static Constants shared = new Constants();
     public static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
-    public static String MESSAGE_GAME_UPDATED = "MESSAGE_GAME_UPDATED";
+    public static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
 
     private HashMap[] counts, points;
     private String[][] letters;
