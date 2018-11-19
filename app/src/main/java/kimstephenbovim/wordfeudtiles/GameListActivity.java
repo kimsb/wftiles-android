@@ -3,6 +3,7 @@ package kimstephenbovim.wordfeudtiles;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +33,7 @@ import kimstephenbovim.wordfeudtiles.rest.RestClient;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
 import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
+import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
 
 /**
  * An activity representing a list of Games. This activity
@@ -61,7 +63,11 @@ public class GameListActivity extends AppCompatActivity {
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername());
+            if (WFTiles.instance.getUser() == null) {
+                System.out.println("Må først logge på...");
+            } else {
+                actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername());
+            }
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -88,6 +94,18 @@ public class GameListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            // This ID represents the Home or Up button. In the case of this
+            // activity, the Up button is shown. Use NavUtils to allow users
+            // to navigate up one level in the application structure. For
+            // more details, see the Navigation pattern on Android Design:
+            //
+            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+            //
+            NavUtils.navigateUpTo(this, new Intent(this, LoginActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -255,6 +273,11 @@ public class GameListActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(LoginEvent loginEvent) {
-        RestClient.getGames();
+        if (loginEvent.getLoginResult() == OK) {
+            RestClient.getGames();
+        } else {
+            //TODO login har feilet, kan dette skje?
+            System.out.println("Login feiler");
+        }
     }
 }

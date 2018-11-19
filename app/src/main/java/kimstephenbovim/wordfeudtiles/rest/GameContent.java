@@ -12,4 +12,8 @@ public class GameContent {
     public GameDTO getGameDTO() {
         return gameDTO;
     }
+
+    public String getType() {
+        return type;
+    }
 }

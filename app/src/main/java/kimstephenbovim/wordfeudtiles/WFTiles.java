@@ -96,6 +96,8 @@ public class WFTiles extends Application {
         return null;
     }
 
+
+    //TODO egen lagring av passord
     private void writeToFile(String filename, Object object) {
         try {
             FileOutputStream fileOutputStream = openFileOutput(filename, MODE_PRIVATE);

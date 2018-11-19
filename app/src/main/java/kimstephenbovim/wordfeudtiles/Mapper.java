@@ -33,6 +33,7 @@ public class Mapper {
             opponent = mapToPlayer(gameDTO.getPlayers().get(0));
         }
 
+        //TODO usikker på hvor brikkene sorteres, men ÆØÅ sorteres ikke riktig...
         Map<String, Integer> remainingLetters = mapUsedLettersToRemaining(gameDTO.getRuleset(),
                 mapTilesToUsedLetters(gameDTO.getTiles()), loggedInPlayer.getRack());
 
@@ -77,7 +78,7 @@ public class Mapper {
                 moveDTO.getTileCount());
     }
 
-    public static User mapToUser(final LoginContent loginContent, final String password, final String loginMethod) {
+    public static User mapToUser(final LoginContent loginContent, final String loginMethod, final String password) {
         return new User(loginContent.getUsername(),
                 loginContent.getEmail(),
                 password,

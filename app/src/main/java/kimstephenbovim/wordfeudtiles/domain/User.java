@@ -42,4 +42,20 @@ public class User implements Serializable{
     public String getAvatarRoot() {
         return avatarRoot;
     }
+
+    public String getLoginMethod() {
+        return loginMethod;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
