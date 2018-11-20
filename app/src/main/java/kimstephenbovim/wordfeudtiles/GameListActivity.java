@@ -32,6 +32,7 @@ import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
 
@@ -103,7 +104,9 @@ public class GameListActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, LoginActivity.class));
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra(MESSAGE_SKIP_LOGIN, false);
+            NavUtils.navigateUpTo(this, intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

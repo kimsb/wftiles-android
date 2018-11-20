@@ -9,6 +9,7 @@ import java.util.Map;
 public class Constants {
 
     public static Constants shared = new Constants();
+    public static String MESSAGE_SKIP_LOGIN = "MESSAGE_SKIP_LOGIN";
     public static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
     public static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
 

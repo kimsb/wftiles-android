@@ -23,6 +23,8 @@ import kimstephenbovim.wordfeudtiles.domain.User;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
+
 public class LoginActivity extends AppCompatActivity {
 
     /**
@@ -38,7 +40,17 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent().getBooleanExtra(MESSAGE_SKIP_LOGIN, true)
+            && WFTiles.instance.getUser() != null) {
+            System.out.println("Har lagret bruker, går rett til GameList");
+            Context context = this.getApplicationContext();
+            Intent intent = new Intent(context, GameListActivity.class);
+            context.startActivity(intent);
+        }
+
+        setTheme(R.style.CustomToolbarStyle);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         Toolbar toolbar = findViewById(R.id.app_toolbar);
@@ -88,22 +100,11 @@ public class LoginActivity extends AppCompatActivity {
         //mProgressView = findViewById(R.id.login_progress);
     }
 
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
         }
 
-        // Reset errors.
-        usernameView.setError(null);
-        passwordView.setError(null);
-
-        // Store values at the time of the login attempt.
         String email = usernameView.getText().toString();
         String password = passwordView.getText().toString();
 
