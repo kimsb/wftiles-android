@@ -1,9 +1,12 @@
 package kimstephenbovim.wordfeudtiles;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -40,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (getIntent().getBooleanExtra(MESSAGE_SKIP_LOGIN, true)
-            && WFTiles.instance.getUser() != null) {
+                && WFTiles.instance.getUser() != null) {
             System.out.println("Har lagret bruker, går rett til GameList");
             LoginActivity loginActivity = LoginActivity.this;
             Intent intent = new Intent(loginActivity, GameListActivity.class);
@@ -104,12 +107,22 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String email = usernameView.getText().toString();
+        String username = usernameView.getText().toString();
         String password = passwordView.getText().toString();
+
+        if ("".equals(username)) {
+            alert(Texts.shared.getText("unknownUsername"));
+            return;
+        }
+
+        if ("".equals(password)) {
+            alert(Texts.shared.getText("wrongPassword"));
+            return;
+        }
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        mAuthTask = new UserLoginTask(email, password);
+        mAuthTask = new UserLoginTask(username, password);
         mAuthTask.execute((Void) null);
     }
 
@@ -169,8 +182,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    //TODO tilbakemelding om feil passord / bruker / timeout
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(LoginEvent loginEvent) {
         switch (loginEvent.getLoginResult()) {
             case OK:
@@ -181,12 +193,36 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case WRONG_PASSWORD:
                 System.out.println("Feil passord");
+                alert(Texts.shared.getText("wrongPassword"));
                 break;
             case UNKNOWN_USER:
                 System.out.println("Ukjent bruker");
+                alert(Texts.shared.getText("unknownUsername"));
+                break;
+            case UNKNOWN_EMAIL:
+                System.out.println("Ukjent epost");
+                alert(Texts.shared.getText("unknownEmail"));
+                break;
             case FAILED:
                 System.out.println("Login feiler");
+                alert(isOnline() ? "" : Texts.shared.getText("connectionError"));
         }
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    private void alert(final String errorMessage) {
+        new AlertDialog.Builder(LoginActivity.this)
+                .setTitle(Texts.shared.getText("loginFailed"))
+                .setMessage(errorMessage)
+                .setPositiveButton(Texts.shared.getText("ok"), null)
+                .create()
+                .show();
     }
 }
 

@@ -30,6 +30,8 @@ import static kimstephenbovim.wordfeudtiles.Mapper.mapToGames;
 import static kimstephenbovim.wordfeudtiles.Mapper.mapToUser;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.FAILED;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
+import static kimstephenbovim.wordfeudtiles.event.LoginResult.UNKNOWN_EMAIL;
+import static kimstephenbovim.wordfeudtiles.event.LoginResult.UNKNOWN_USER;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.WRONG_PASSWORD;
 
 public class RestClient {
@@ -83,14 +85,20 @@ public class RestClient {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if ("error".equals(response.body().getStatus())) {
-                    System.out.println("login feiler med: " + response.body().getLoginContent().getType());
-                    EventBus.getDefault().post(new LoginEvent(WRONG_PASSWORD));
-
+                    switch (response.body().getLoginContent().getType()) {
+                        case "unknown_username":
+                            EventBus.getDefault().post(new LoginEvent(UNKNOWN_USER));
+                            break;
+                        case "unknown_email":
+                            EventBus.getDefault().post(new LoginEvent(UNKNOWN_EMAIL));
+                            break;
+                        case "wrong_password":
+                            EventBus.getDefault().post(new LoginEvent(WRONG_PASSWORD));
+                            break;
+                    }
                 } else {
-                    System.out.println("login success!");
-                    WFTiles.instance.setUser(mapToUser(response.body().getLoginContent(), loginMethod, password));
-
                     EventBus.getDefault().post(new LoginEvent(OK));
+                    WFTiles.instance.setUser(mapToUser(response.body().getLoginContent(), loginMethod, password));
                 }
             }
 
@@ -141,7 +149,7 @@ public class RestClient {
                 if ("error".equals(response.body().getStatus())) {
                     System.out.println("getGame feiler med: " + response.body().getGameContent().getType());
                     if ("login_required".equals(response.body().getGameContent().getType())) {
-                        if (attemptRelogin) {
+                            if (attemptRelogin) {
                             reLogin();
                         } else {
                             System.out.println("Relogin fails, must post alert");
