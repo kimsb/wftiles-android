@@ -90,7 +90,7 @@ public class GameListActivity extends AppCompatActivity {
 
         setupRecyclerView(WFTiles.instance.getGames());
 
-        RestClient.getGames();
+        RestClient.getGames(true);
     }
 
     @Override
@@ -253,7 +253,7 @@ public class GameListActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
         //TODO refactor game-comparings + all compare-logic outside main thread
         List<Game> loadedGames = gamesLoadedEvent.getGames();
@@ -277,7 +277,7 @@ public class GameListActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(LoginEvent loginEvent) {
         if (loginEvent.getLoginResult() == OK) {
-            RestClient.getGames();
+            RestClient.getGames(false);
         } else {
             //TODO login har feilet, kan dette skje?
             System.out.println("Login feiler");

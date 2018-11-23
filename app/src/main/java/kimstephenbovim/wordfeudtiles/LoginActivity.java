@@ -1,6 +1,5 @@
 package kimstephenbovim.wordfeudtiles;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,9 +42,9 @@ public class LoginActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra(MESSAGE_SKIP_LOGIN, true)
             && WFTiles.instance.getUser() != null) {
             System.out.println("Har lagret bruker, går rett til GameList");
-            Context context = this.getApplicationContext();
-            Intent intent = new Intent(context, GameListActivity.class);
-            context.startActivity(intent);
+            LoginActivity loginActivity = LoginActivity.this;
+            Intent intent = new Intent(loginActivity, GameListActivity.class);
+            loginActivity.startActivity(intent);
         }
 
         setTheme(R.style.CustomToolbarStyle);
@@ -176,9 +175,9 @@ public class LoginActivity extends AppCompatActivity {
         switch (loginEvent.getLoginResult()) {
             case OK:
                 System.out.println("Jippi! skal åpne games");
-                Context context = this.getApplicationContext();
-                Intent intent = new Intent(context, GameListActivity.class);
-                context.startActivity(intent);
+                LoginActivity loginActivity = LoginActivity.this;
+                Intent intent = new Intent(loginActivity, GameListActivity.class);
+                loginActivity.startActivity(intent);
                 break;
             case WRONG_PASSWORD:
                 System.out.println("Feil passord");

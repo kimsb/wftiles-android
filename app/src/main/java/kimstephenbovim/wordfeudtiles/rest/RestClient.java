@@ -3,10 +3,10 @@ package kimstephenbovim.wordfeudtiles.rest;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.UnsupportedEncodingException;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.WFTiles;
@@ -15,7 +15,9 @@ import kimstephenbovim.wordfeudtiles.domain.User;
 import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
-import okhttp3.JavaNetCookieJar;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,9 +38,23 @@ public class RestClient {
     private static RestService restService = getClient().create(RestService.class);
 
     private static Retrofit getClient() {
-        CookieManager cookieManager = new CookieManager();
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().cookieJar(new JavaNetCookieJar(cookieManager)).build();
+        CookieJar cookieJar = new CookieJar() {
+            private final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
+
+            @Override
+            public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                cookieStore.put(url.host(), cookies);
+            }
+
+            @Override
+            public List<Cookie> loadForRequest(HttpUrl url) {
+                List<Cookie> cookies = cookieStore.get(url.host());
+                return cookies != null ? cookies : new ArrayList<Cookie>();
+            }
+        };
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
 
         return new retrofit2.Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -80,13 +96,14 @@ public class RestClient {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                //TODO - kommer også hit om wifi er av. kan det oppdages?
                 System.out.println("login failure...");
                 EventBus.getDefault().post(new LoginEvent(FAILED));
             }
         });
     }
 
-    public static void getGames() {
+    public static void getGames(final boolean attemptRelogin) {
         restService.getGames().enqueue(new Callback<GamesResponse>() {
             @Override
             public void onResponse(Call<GamesResponse> call, Response<GamesResponse> response) {
@@ -94,7 +111,11 @@ public class RestClient {
                 if ("error".equals(response.body().getStatus())) {
                     System.out.println("getGames feiler med: " + response.body().getGamesContent().getType());
                     if ("login_required".equals(response.body().getGamesContent().getType())) {
-                        reLogin();
+                        if (attemptRelogin) {
+                            reLogin();
+                        } else {
+                            System.out.println("Relogin fails, must post alert");
+                        }
                     }
                 } else {
                     System.out.println("getGames success!");
@@ -112,7 +133,7 @@ public class RestClient {
         });
     }
 
-    public static void getGame(final long gameId) {
+    public static void getGame(final long gameId, final boolean attemptRelogin) {
         restService.getGame(gameId).enqueue(new Callback<GameResponse>() {
             @Override
             public void onResponse(Call<GameResponse> call, Response<GameResponse> response) {
@@ -120,7 +141,12 @@ public class RestClient {
                 if ("error".equals(response.body().getStatus())) {
                     System.out.println("getGame feiler med: " + response.body().getGameContent().getType());
                     if ("login_required".equals(response.body().getGameContent().getType())) {
-                        reLogin();
+                        if (attemptRelogin) {
+                            reLogin();
+                        } else {
+                            System.out.println("Relogin fails, must post alert");
+                        }
+
                     }
                 } else {
                     System.out.println("getGame success");

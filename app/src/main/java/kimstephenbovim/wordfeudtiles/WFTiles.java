@@ -3,6 +3,7 @@ package kimstephenbovim.wordfeudtiles;
 import android.app.Application;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -116,6 +117,9 @@ public class WFTiles extends Application {
             Object readObject = objectInputStream.readObject();
             objectInputStream.close();
             return readObject;
+        } catch (FileNotFoundException e) {
+            System.out.println("Filen: " + filename + " er ikke opprettet ennå.");
+            return null;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -65,7 +65,7 @@ public class GameDetailFragment extends Fragment {
         game = WFTiles.instance.getGame(gameId);
 
         if (getArguments().containsKey(MESSAGE_GAME_ID)) {
-            RestClient.getGame(gameId);
+            RestClient.getGame(gameId, true);
         }
     }
 
@@ -308,6 +308,6 @@ public class GameDetailFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(LoginEvent loginEvent) {
-        RestClient.getGame(gameId);
+        RestClient.getGame(gameId, false);
     }
 }
