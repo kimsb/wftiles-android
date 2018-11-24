@@ -2,9 +2,12 @@ package kimstephenbovim.wordfeudtiles;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -255,6 +258,11 @@ public class GameListActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
+        if (gamesLoadedEvent.getGames() == null) {
+            alert(isOnline() ? "" : Texts.shared.getText("connectionError"));
+            return;
+        }
+
         //TODO refactor game-comparings + all compare-logic outside main thread
         List<Game> loadedGames = gamesLoadedEvent.getGames();
         System.out.println("In Activity, recieved Event for " + loadedGames.size() + " games: ");
@@ -282,5 +290,21 @@ public class GameListActivity extends AppCompatActivity {
             //TODO login har feilet, kan dette skje?
             System.out.println("Login feiler");
         }
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    private void alert(final String errorMessage) {
+        new AlertDialog.Builder(this)
+                .setTitle(Texts.shared.getText("loadingFailed"))
+                .setMessage(errorMessage)
+                .setPositiveButton(Texts.shared.getText("ok"), null)
+                .create()
+                .show();
     }
 }

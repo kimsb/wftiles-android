@@ -25,6 +25,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static kimstephenbovim.wordfeudtiles.Mapper.mapToGame;
 import static kimstephenbovim.wordfeudtiles.Mapper.mapToGames;
 import static kimstephenbovim.wordfeudtiles.Mapper.mapToUser;
@@ -55,6 +56,8 @@ public class RestClient {
             }
         };
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(10, SECONDS)
+                .connectTimeout(10, SECONDS)
                 .cookieJar(cookieJar)
                 .build();
 
@@ -104,8 +107,6 @@ public class RestClient {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                //TODO - kommer også hit om wifi er av. kan det oppdages?
-                System.out.println("login failure...");
                 EventBus.getDefault().post(new LoginEvent(FAILED));
             }
         });
@@ -122,7 +123,7 @@ public class RestClient {
                         if (attemptRelogin) {
                             reLogin();
                         } else {
-                            System.out.println("Relogin fails, must post alert");
+                            EventBus.getDefault().post(new GamesLoadedEvent(null));
                         }
                     }
                 } else {
@@ -136,7 +137,7 @@ public class RestClient {
 
             @Override
             public void onFailure(Call<GamesResponse> call, Throwable t) {
-                System.out.println("getGames failure...");
+                EventBus.getDefault().post(new GamesLoadedEvent(null));
             }
         });
     }
@@ -152,7 +153,7 @@ public class RestClient {
                             if (attemptRelogin) {
                             reLogin();
                         } else {
-                            System.out.println("Relogin fails, must post alert");
+                                EventBus.getDefault().post(new GameLoadedEvent(null));
                         }
 
                     }
@@ -167,7 +168,7 @@ public class RestClient {
 
             @Override
             public void onFailure(Call<GameResponse> call, Throwable t) {
-                System.out.println("getGame failure...");
+                EventBus.getDefault().post(new GameLoadedEvent(null));
             }
         });
     }

@@ -1,9 +1,12 @@
 package kimstephenbovim.wordfeudtiles;
 
 import android.app.Activity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +32,7 @@ import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
 import static java.lang.String.valueOf;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Mapper.getTileSummaryItems;
@@ -300,8 +304,12 @@ public class GameDetailFragment extends Fragment {
         super.onStop();
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GameLoadedEvent gameLoadedEvent) {
+        if (gameLoadedEvent.getGame() == null) {
+            alert(isOnline() ? "" : Texts.shared.getText("connectionError"));
+            return;
+        }
         System.out.println("I Fragment, updater: " + game.getLetterCount().toString());
         updateView();
     }
@@ -309,5 +317,21 @@ public class GameDetailFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(LoginEvent loginEvent) {
         RestClient.getGame(gameId, false);
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    private void alert(final String errorMessage) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(Texts.shared.getText("loadingFailed"))
+                .setMessage(errorMessage)
+                .setPositiveButton(Texts.shared.getText("ok"), null)
+                .create()
+                .show();
     }
 }
