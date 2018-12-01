@@ -56,29 +56,34 @@ public class WFTiles extends Application {
     public void setGames(List<Game> newGames) {
         ArrayList<Game> mostRecent = new ArrayList<>();
         for (Game newGame : newGames) {
-            boolean usedStored = false;
             for (Game storedGame : games) {
                 if (newGame.getId() == storedGame.getId()
-                        && newGame.getUpdated() <= storedGame.getUpdated()) {
-                    usedStored = true;
+                        && newGame.getUpdated() == storedGame.getUpdated()) {
                     mostRecent.add(storedGame);
+                    //TODO ser ikke ut til å komme hit
                     System.out.println("Store saved game against: " + storedGame.getOpponent().presentableUsername());
                     break;
                 }
             }
-            if (!usedStored) {
-                mostRecent.add(newGame);
-                System.out.println("Store new game against: " + newGame.getOpponent().presentableUsername());
-            }
+            System.out.println("Store new game against: " + newGame.getOpponent().presentableUsername());
         }
         games = mostRecent;
         writeToFile(INTERNAL_GAMES, games);
     }
 
+    public boolean gameIsNewOrUpdated(final Game game) {
+        for (Game storedGame : games) {
+            if (game.getId() == storedGame.getId() &&
+                    game.getUpdated() == storedGame.getUpdated()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void setGame(Game game) {
         for (Game storedGame : games) {
-            if (game.getId() == storedGame.getId()
-                    && game.getUpdated() >= storedGame.getUpdated()) {
+            if (game.getId() == storedGame.getId()) {
                 storedGame.setLetterCount(game.getLetterCount());
                 System.out.println("Store letterCount for game against: " + game.getOpponent().presentableUsername());
                 writeToFile(INTERNAL_GAMES, games);
@@ -93,7 +98,6 @@ public class WFTiles extends Application {
                 return game;
             }
         }
-        System.out.println("getGame returns null - this shouldn't happen");
         return null;
     }
 

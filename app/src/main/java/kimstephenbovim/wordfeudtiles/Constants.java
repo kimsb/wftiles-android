@@ -1,8 +1,13 @@
 package kimstephenbovim.wordfeudtiles;
 
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
+
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -13,6 +18,7 @@ public class Constants {
     public static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
     public static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
 
+    public List<TileParameters> tileParameters;
     private HashMap[] counts, points;
     private String[][] letters;
     private String[] locales = {"en", "nb", "nl", "da", "sv", "en", "es", "fr", "sv", "de", "nb", "fi", "pt"};
@@ -78,6 +84,62 @@ public class Constants {
                 arraysToMap(portugeseLetters, portugesePoints)};
         letters = new String[][]{englishLetters, norwegianLetters, dutchLetters, danishLetters, swedishLetters, englishLetters,
                 spanishLetters, frenchLetters, swedishLetters, germanLetters, norwegianLetters, finnishLetters, portugeseLetters};
+
+        tileParameters = calculateTileParameters();
+    }
+
+    public int availableWidth(boolean portraitOrientation) {
+        //TODO ta hensyn til orientation
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        int minMargin = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.min_margin));
+        return metrics.widthPixels - (minMargin * 2);
+    }
+
+    private List<TileParameters> calculateTileParameters() {
+        ArrayList<TileParameters> parameters = new ArrayList<>();
+        //TODO må gjøre dette for både portrait og landscape
+
+        int tileSize = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_width));
+        //TODO bør jeg ha mer slack på minMargin? kanskje 8dp?
+        int minMargin = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.min_margin));
+        int minSpacing = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_grid_min_space));
+
+        //TODO må bruke fragment-width på tablets
+        int availableWidth = availableWidth(true);
+
+        int span = (availableWidth + minSpacing) / (tileSize + minSpacing);
+
+        int extraSpacing = availableWidth - (span * tileSize) - ((span-1) * minSpacing);
+        int spacing = minSpacing;
+        while (extraSpacing > span-1) {
+            spacing++;
+            extraSpacing -= span-1;
+        }
+
+        int extraMargin = extraSpacing > 0
+                ? Math.round(extraSpacing / 2f)
+                : 0;
+
+        //TODO kan det noen gang være mer enn 97 (104 - 7 på racket) brikker som skal vises?
+        int column = 0;
+        int row = 0;
+        for (int i = 0; i < 97; i++) {
+            int rowPlusTile = row * (tileSize+spacing);
+            int columnPlusTile = extraMargin + column * (tileSize+spacing);
+            parameters.add(new TileParameters(rowPlusTile + minMargin,
+                    rowPlusTile + tileSize + minMargin,
+                    columnPlusTile + tileSize,
+                    columnPlusTile,
+                    columnPlusTile + (tileSize/2),
+                    rowPlusTile + tileSize - (tileSize/5) + minMargin,
+                    Math.round(columnPlusTile + (tileSize * 0.9f)),
+                    Math.round(rowPlusTile + (tileSize * 0.3f)) + minMargin));
+            if (++column == span) {
+                column = 0;
+                row++;
+            }
+        }
+        return parameters;
     }
 
     //english

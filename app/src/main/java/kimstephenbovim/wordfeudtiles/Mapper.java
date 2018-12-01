@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
-import kimstephenbovim.wordfeudtiles.domain.GameDetailItem;
 import kimstephenbovim.wordfeudtiles.domain.GameRow;
 import kimstephenbovim.wordfeudtiles.domain.Move;
 import kimstephenbovim.wordfeudtiles.domain.Player;
@@ -15,9 +14,6 @@ import kimstephenbovim.wordfeudtiles.rest.GameDTO;
 import kimstephenbovim.wordfeudtiles.rest.LoginContent;
 import kimstephenbovim.wordfeudtiles.rest.MoveDTO;
 import kimstephenbovim.wordfeudtiles.rest.PlayerDTO;
-
-import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.TILE;
-import static kimstephenbovim.wordfeudtiles.domain.GameDetailType.TILE_SUMMARY;
 
 public class Mapper {
 
@@ -148,22 +144,5 @@ public class Mapper {
         gameRows.addAll(theirTurn);
         gameRows.addAll(finished);
         return gameRows;
-    }
-
-    public static List<GameDetailItem> mapStringsToTileItems(final List<String> strings) {
-        ArrayList<GameDetailItem> gameDetailItems = new ArrayList<>();
-        for (String string : strings) {
-            gameDetailItems.add(new GameDetailItem(TILE, string));
-        }
-        return gameDetailItems;
-    }
-
-    public static List<GameDetailItem> getTileSummaryItems(final int ruleset) {
-        ArrayList<GameDetailItem> gameDetailItems = new ArrayList<>();
-        String[] letters = Constants.shared.getLetters(ruleset);
-        for (String letter : letters) {
-            gameDetailItems.add(new GameDetailItem(TILE_SUMMARY, letter));
-        }
-        return gameDetailItems;
     }
 }

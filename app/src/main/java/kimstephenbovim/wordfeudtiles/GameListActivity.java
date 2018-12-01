@@ -133,6 +133,8 @@ public class GameListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 GameRow gameRow = (GameRow) view.getTag();
                 Game game = gameRow.getGame();
+                RestClient.getGame(game.getId(), true);
+
                 if (isTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putLong(MESSAGE_GAME_ID, game.getId());

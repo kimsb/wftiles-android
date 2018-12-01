@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import kimstephenbovim.wordfeudtiles.WFTiles;
 import kimstephenbovim.wordfeudtiles.domain.Game;
@@ -63,6 +64,7 @@ public class RestClient {
 
         return new retrofit2.Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .callbackExecutor(Executors.newSingleThreadExecutor())
                 .addConverterFactory(MoshiConverterFactory.create())
                 .client(okHttpClient)
                 .build();
@@ -161,8 +163,10 @@ public class RestClient {
                     System.out.println("getGame success");
                     Game game = mapToGame(response.body().getGameContent().getGameDTO());
 
-                    WFTiles.instance.setGame(game);
-                    EventBus.getDefault().post(new GameLoadedEvent(game));
+                    if (WFTiles.instance.gameIsNewOrUpdated(game)) {
+                        WFTiles.instance.setGame(game);
+                        EventBus.getDefault().post(new GameLoadedEvent(game));
+                    }
                 }
             }
 

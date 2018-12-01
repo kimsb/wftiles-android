@@ -16,9 +16,9 @@
     <TextView
         android:id="@+id/headerLanguageTextView"
         android:layout_width="0dp"
-        android:layout_height="21dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:gravity="left|center_vertical"
         android:textColor="@color/textColor"
         android:textSize="17sp"
@@ -29,10 +29,9 @@
     <TextView
         android:id="@+id/headerScoreTextView"
         android:layout_width="0dp"
-        android:layout_height="21dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
         android:gravity="left|center_vertical"
         android:textColor="@color/textColor"
         android:textSize="17sp"
@@ -43,15 +42,15 @@
     <TextView
         android:id="@+id/headerLastMoveTextView"
         android:layout_width="0dp"
-        android:layout_height="21dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:gravity="left|center_vertical"
         android:textColor="@color/textColor"
         android:textSize="17sp"
-        app:layout_constraintBottom_toBottomOf="@+id/headerOpponentImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/headerOpponentImageView" />
+        app:layout_constraintStart_toEndOf="@+id/headerOpponentImageView"
+        app:layout_constraintTop_toBottomOf="@+id/headerScoreTextView" />
 
     <TextView
         android:id="@+id/headerDiffLabel"
