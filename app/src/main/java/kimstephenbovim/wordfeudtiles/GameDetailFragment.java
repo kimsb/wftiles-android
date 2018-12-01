@@ -64,6 +64,7 @@ public class GameDetailFragment extends Fragment {
 
     private void draw() {
         LinearLayout linearLayout = getActivity().findViewById(R.id.game_detail_container);
+        linearLayout.removeAllViews();
 
         View header = LayoutInflater.from(getActivity())
                 .inflate(R.layout.game_detail_header, linearLayout);

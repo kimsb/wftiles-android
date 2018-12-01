@@ -70,8 +70,11 @@ public class TileCanvas extends View {
                     (float) tileParameters.bottom));
         }
 
+        int height = rects.isEmpty()
+                ? 0
+                : Math.round(rects.get(rects.size() - 1).bottom + getResources().getDimension(R.dimen.min_margin));
         setLayoutParams(new ViewGroup.LayoutParams(Constants.shared.availableWidth(true),
-                Math.round(rects.get(rects.size() - 1).bottom + getResources().getDimension(R.dimen.min_margin))));
+                height));
 
         //TODO trenger jeg denne?
         setFocusableInTouchMode(true);

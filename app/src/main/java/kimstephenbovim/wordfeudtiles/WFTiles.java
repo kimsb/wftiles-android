@@ -56,16 +56,21 @@ public class WFTiles extends Application {
     public void setGames(List<Game> newGames) {
         ArrayList<Game> mostRecent = new ArrayList<>();
         for (Game newGame : newGames) {
+            boolean foundStored = false;
             for (Game storedGame : games) {
                 if (newGame.getId() == storedGame.getId()
                         && newGame.getUpdated() == storedGame.getUpdated()) {
                     mostRecent.add(storedGame);
                     //TODO ser ikke ut til å komme hit
                     System.out.println("Store saved game against: " + storedGame.getOpponent().presentableUsername());
+                    foundStored = true;
                     break;
                 }
             }
-            System.out.println("Store new game against: " + newGame.getOpponent().presentableUsername());
+            if (!foundStored) {
+                mostRecent.add(newGame);
+                System.out.println("Store new game against: " + newGame.getOpponent().presentableUsername());
+            }
         }
         games = mostRecent;
         writeToFile(INTERNAL_GAMES, games);
@@ -73,8 +78,9 @@ public class WFTiles extends Application {
 
     public boolean gameIsNewOrUpdated(final Game game) {
         for (Game storedGame : games) {
-            if (game.getId() == storedGame.getId() &&
-                    game.getUpdated() == storedGame.getUpdated()) {
+            if (game.getId() == storedGame.getId()
+                    && game.getUpdated() == storedGame.getUpdated()
+                    && game.getRemainingLetters().size() == storedGame.getRemainingLetters().size()) {
                 return false;
             }
         }
