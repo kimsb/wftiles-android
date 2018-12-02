@@ -61,13 +61,15 @@ public class TileCanvas extends View {
         scorePaint.setStyle(FILL);
         scorePaint.setTextAlign(RIGHT);
 
-        for (int i = 0; i < letters.size(); i++) {
-            TileParameters tileParameters = Constants.shared.tileParameters.get(i);
+        if (letters != null) {
+            for (int i = 0; i < letters.size(); i++) {
+                TileParameters tileParameters = Constants.shared.tileParameters.get(i);
 
-            rects.add(new RectF((float) tileParameters.left,
-                    (float) tileParameters.top,
-                    (float) tileParameters.right,
-                    (float) tileParameters.bottom));
+                rects.add(new RectF((float) tileParameters.left,
+                        (float) tileParameters.top,
+                        (float) tileParameters.right,
+                        (float) tileParameters.bottom));
+            }
         }
 
         int height = rects.isEmpty()
@@ -85,14 +87,16 @@ public class TileCanvas extends View {
 
         super.onDraw(canvas);
 
-        for (int i = 0; i < letters.size(); i++) {
-            TileParameters tileParameters = Constants.shared.tileParameters.get(i);
-            RectF rectF = rects.get(i);
-            String letter = letters.get(i);
-            canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, fillPaint);
-            canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, strokePaint);
-            canvas.drawText(letter, tileParameters.letterX, tileParameters.letterY, letterPaint);
-            canvas.drawText(points.get(letter) == 0 ? "" : String.valueOf(points.get(letter)), tileParameters.scoreX, tileParameters.scoreY, scorePaint);
+        if (letters != null) {
+            for (int i = 0; i < letters.size(); i++) {
+                TileParameters tileParameters = Constants.shared.tileParameters.get(i);
+                RectF rectF = rects.get(i);
+                String letter = letters.get(i);
+                canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, fillPaint);
+                canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, strokePaint);
+                canvas.drawText(letter, tileParameters.letterX, tileParameters.letterY, letterPaint);
+                canvas.drawText(points.get(letter) == 0 ? "" : String.valueOf(points.get(letter)), tileParameters.scoreX, tileParameters.scoreY, scorePaint);
+            }
         }
     }
 }

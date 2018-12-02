@@ -110,8 +110,13 @@ public class GameDetailFragment extends Fragment {
         View remainingTilesHeader = LayoutInflater.from(getActivity())
                 .inflate(R.layout.game_detail_section_header, linearLayout, false);
         TextView remainingTilesView = remainingTilesHeader.findViewById(R.id.detailSectionHeaderTextView);
-        int inBag = Math.max(0, game.getRemainingLetters().size() - 7);
-        remainingTilesView.setText(String.format(Texts.shared.getText("remainingTiles"), inBag));
+
+        if (game.getRemainingLetters() == null) {
+            remainingTilesView.setText(Texts.shared.getText("remainingTiles"));
+        } else {
+            int inBag = Math.max(0, game.getRemainingLetters().size() - 7);
+            remainingTilesView.setText(String.format(Texts.shared.getText("remainingTilesBag"), inBag));
+        }
         linearLayout.addView(remainingTilesHeader);
 
         TileCanvas tiles = new TileCanvas(getActivity(), game.getRemainingLetters(), Constants.shared.getPoints(game.getRuleset()));

@@ -30,11 +30,11 @@ public class Texts {
         }
         return texts.get(key)[getLocaleIndex()];
     }
-    
+
     public boolean unsupportedLanguage(int ruleset) {
         return ruleset >= languages.length;
     }
-    
+
     public String getGameLanguage(int ruleset) {
         if (unsupportedLanguage(ruleset)) {
             return getText("unsupportedLanguage");
@@ -42,7 +42,7 @@ public class Texts {
         return getText(languages[ruleset]);
     }
 
-    
+
     //TODO
     private int getLocaleIndex() {
         return 1;
@@ -130,7 +130,9 @@ public class Texts {
 
         texts.put("yourTiles", new String[]{"Your tiles", "Dine brikker", "Jouw letters", "Dine brikker", "Dina brickor", "Tus fichas", "Vos pièces", "Deine Spielsteine", "Teidän laatat", "Suas peças"});
 
-        texts.put("remainingTiles", new String[]{"Remaining tiles (%d in the bag)", "Resterende brikker (%d i posen)", "Resterende letters (%d in het zakje)", "Resterende brikker (%d i posen)", "Resterande brickor (%d i påsen)", "Fichas restantes (%d en la bolsa)", "Pièces restantes (%d dans le sac)", "Verbleibende Spielsteine (%d in den Beutel)", "Jäljellä olevat laatat (%d pussissa)", "Peças restantes (%d no saco)"});
+        texts.put("remainingTiles", new String[]{"Remaining tiles", "Resterende brikker", "Resterende letters", "Resterende brikker", "Resterande brickor", "Fichas restantes", "Pièces restantes", "Verbleibende Spielsteine", "Jäljellä olevat laatat", "Peças restantes"});
+
+        texts.put("remainingTilesBag", new String[]{"Remaining tiles (%d in the bag)", "Resterende brikker (%d i posen)", "Resterende letters (%d in het zakje)", "Resterende brikker (%d i posen)", "Resterande brickor (%d i påsen)", "Fichas restantes (%d en la bolsa)", "Pièces restantes (%d dans le sac)", "Verbleibende Spielsteine (%d in den Beutel)", "Jäljellä olevat laatat (%d pussissa)", "Peças restantes (%d no saco)"});
 
         texts.put("standard", new String[]{"Standard", "Standard", "Standaard", "Standard", "Standard", "Estándar", "Standard", "Standard", "Vakio", "Padrão"});
 

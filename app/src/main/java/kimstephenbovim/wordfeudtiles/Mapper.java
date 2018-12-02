@@ -88,7 +88,10 @@ public class Mapper {
     }
 
     private static List<String> mapUsedLettersToRemaining(int ruleset, List<String> usedLetters, List<String> rack) {
-        if (usedLetters == null || Texts.shared.unsupportedLanguage(ruleset)) {
+        if (usedLetters == null) {
+            return null;
+        }
+        if (Texts.shared.unsupportedLanguage(ruleset)) {
             return new ArrayList<>();
         }
         Map<String, Integer> letterCount = Constants.shared.getCounts(ruleset);

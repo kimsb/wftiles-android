@@ -80,6 +80,7 @@ public class WFTiles extends Application {
         for (Game storedGame : games) {
             if (game.getId() == storedGame.getId()
                     && game.getUpdated() == storedGame.getUpdated()
+                    && storedGame.getRemainingLetters() != null
                     && game.getRemainingLetters().size() == storedGame.getRemainingLetters().size()) {
                 return false;
             }
