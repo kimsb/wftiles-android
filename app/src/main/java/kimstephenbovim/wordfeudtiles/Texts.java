@@ -1,13 +1,19 @@
 package kimstephenbovim.wordfeudtiles;
 
+import android.content.res.Resources;
+import android.support.v4.os.ConfigurationCompat;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class Texts {
 
     public static Texts shared = new Texts();
     private Map<String, String[]> texts = new HashMap<>();
-    private String[] locales = {"en", "nb", "nl", "da", "sv", "es", "fr", "de", "fi", "pt"};
+    private List<String> locales = Arrays.asList("en", "nb", "nl", "da", "sv", "es", "fr", "de", "fi", "pt");
     private String[] languages = {"englishUS", "norwegianBokmal", "dutch", "danish", "swedish", "englishIntl", "spanish", "french", "swedishStrict",
             "german", "norwegianNynorsk", "finnish", "portuguese"};
 
@@ -42,24 +48,11 @@ public class Texts {
         return getText(languages[ruleset]);
     }
 
-
-    //TODO
     private int getLocaleIndex() {
-        return 1;
+        Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);
+        int index = locales.indexOf(locale.getLanguage());
+        return index == -1 ? 0 : index;
     }
-    /*func getLocaleIndex() -> Int {
-        if (WFTiles.instance.preferredLanguageIndex() != nil) {
-            return WFTiles.instance.preferredLanguageIndex()!
-        }
-        var preferredLanguage = NSLocale.preferredLanguages[0]
-        if preferredLanguage.contains("-") {
-            preferredLanguage = preferredLanguage.components(separatedBy: "-")[0]
-        }
-        guard let index = locales.index(of: preferredLanguage) else {
-            return 0
-        }
-        return index
-    }*/
 
     private Texts() {
         texts.put("loginInfo", new String[]{"Log in using your Wordfeud username or email address below.", "Logg inn med ditt Wordfeud-brukernavn eller e-postadresse.", "Log hieronder in met je Wordfeud-gebruikersnaam of je e-mailadres.", "Log på med dit Wordfeud-brugernavn eller e-mailadresse herunder.", "Logga in med ditt Wordfeud-användarnamn eller e-postadress nedan.", "Inicia sesión con tu nombre de usuario Wordfeud o tu dirección de correo electrónico.", "Connecte-toi en utilisant ton nom d'utilisateur Wordfeud ou ton adresse e-mail ci-dessous.", "Gib denselben Wordfeud Benutzernamen bzw. dieselbe E-Mail-Adresse ein, den/die Du bei der Anmeldung verwendet hast.", "Rekisteröidy tai kirjaudu sisään sähköpostiosoitteella tai Wordfeud-käyttäjänimellä.", "Entre em Wordfeud usuando seu nome de usuário ou e-mail abaixo."});
