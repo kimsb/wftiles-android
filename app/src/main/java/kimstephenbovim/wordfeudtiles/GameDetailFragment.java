@@ -36,6 +36,7 @@ public class GameDetailFragment extends Fragment {
 
     private Game game;
     private long gameId;
+    private boolean isCreated;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -143,6 +144,16 @@ public class GameDetailFragment extends Fragment {
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isCreated) {
+            RestClient.getGame(gameId, true);
+        } else {
+            isCreated = true;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

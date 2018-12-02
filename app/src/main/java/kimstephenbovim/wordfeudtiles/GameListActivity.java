@@ -55,6 +55,7 @@ public class GameListActivity extends AppCompatActivity {
      */
     private boolean isTwoPane;
     private List<Game> games;
+    private boolean isCreated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,6 +257,16 @@ public class GameListActivity extends AppCompatActivity {
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isCreated) {
+            RestClient.getGames(true);
+        } else {
+            isCreated = true;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
