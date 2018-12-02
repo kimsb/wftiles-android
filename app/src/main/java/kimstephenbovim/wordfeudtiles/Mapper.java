@@ -1,7 +1,8 @@
 package kimstephenbovim.wordfeudtiles;
 
+import java.text.Collator;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +30,11 @@ public class Mapper {
             opponent = mapToPlayer(gameDTO.getPlayers().get(0));
         }
 
-        //TODO usikker på hvor brikkene sorteres, men ÆØÅ sorteres ikke riktig...
-        Map<String, Integer> remainingLetters = mapUsedLettersToRemaining(gameDTO.getRuleset(),
+        loggedInPlayer.setRack(sortByLocale(loggedInPlayer.getRack(), gameDTO.getRuleset()));
+
+        List<String> remainingLetters = mapUsedLettersToRemaining(gameDTO.getRuleset(),
                 mapTilesToUsedLetters(gameDTO.getTiles()), loggedInPlayer.getRack());
 
-        //TODO sort rack
         return new Game(gameDTO.getUpdated(),
                 remainingLetters,
                 gameDTO.getRunning(),
@@ -86,9 +87,9 @@ public class Mapper {
                 loginContent.getFbLastName());
     }
 
-    private static Map<String, Integer> mapUsedLettersToRemaining(int ruleset, List<String> usedLetters, List<String> rack) {
+    private static List<String> mapUsedLettersToRemaining(int ruleset, List<String> usedLetters, List<String> rack) {
         if (usedLetters == null || Texts.shared.unsupportedLanguage(ruleset)) {
-            return new HashMap<>();
+            return new ArrayList<>();
         }
         Map<String, Integer> letterCount = Constants.shared.getCounts(ruleset);
         for (String letter : usedLetters) {
@@ -97,7 +98,19 @@ public class Mapper {
         for (String letter : rack) {
             letterCount.put(letter, letterCount.get(letter) - 1);
         }
-        return letterCount;
+        ArrayList<String> remainingLetters = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : letterCount.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                remainingLetters.add(entry.getKey());
+            }
+        }
+        return sortByLocale(remainingLetters, ruleset);
+    }
+
+    private static List<String> sortByLocale(final List<String> unsorted, final int ruleset) {
+        Collator collator = Collator.getInstance(Constants.shared.getLocale(ruleset));
+        Collections.sort(unsorted, collator);
+        return unsorted;
     }
 
     private static List<String> mapTilesToUsedLetters(List<List<Object>> tiles) {
@@ -115,7 +128,7 @@ public class Mapper {
         return usedLetters;
     }
 
-    public static List<GameRow> mapGamesToGameRows(List<Game> games) {
+    static List<GameRow> mapGamesToGameRows(List<Game> games) {
         ArrayList<GameRow> yourTurn = new ArrayList<>();
         ArrayList<GameRow> theirTurn = new ArrayList<>();
         ArrayList<GameRow> finished = new ArrayList<>();

@@ -29,6 +29,10 @@ public class Player implements Serializable {
         return rack;
     }
 
+    public void setRack(final List<String> rack) {
+        this.rack = rack;
+    }
+
     public int getScore() {
         return score;
     }

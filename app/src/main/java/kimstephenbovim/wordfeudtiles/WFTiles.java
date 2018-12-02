@@ -90,7 +90,7 @@ public class WFTiles extends Application {
     public void setGame(Game game) {
         for (Game storedGame : games) {
             if (game.getId() == storedGame.getId()) {
-                storedGame.setLetterCount(game.getLetterCount());
+                storedGame.setRemainingLetters(game.getRemainingLetters());
                 System.out.println("Store letterCount for game against: " + game.getOpponent().presentableUsername());
                 writeToFile(INTERNAL_GAMES, games);
                 break;

@@ -1,16 +1,13 @@
 package kimstephenbovim.wordfeudtiles.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import kimstephenbovim.wordfeudtiles.Texts;
 import kimstephenbovim.wordfeudtiles.WFTiles;
 
 public class Game implements Serializable {
     private long updated;
-    private Map<String, Integer> letterCount;
     private boolean isRunning;
     private long id;
     private boolean playersTurn;
@@ -18,13 +15,13 @@ public class Game implements Serializable {
     private Player player;
     private Player opponent;
     private int ruleset;
-    //private List<String> remainingLetters;
+    private List<String> remainingLetters;
     //private int bagCount;
     //private long created;
 
-    public Game(long updated, Map<String, Integer> letterCount, boolean isRunning, long id, boolean playersTurn, Move lastMove, Player player, Player opponent, int ruleset) {
+    public Game(long updated, List<String> remainingLetters, boolean isRunning, long id, boolean playersTurn, Move lastMove, Player player, Player opponent, int ruleset) {
         this.updated = updated;
-        this.letterCount = letterCount;
+        this.remainingLetters = remainingLetters;
         this.isRunning = isRunning;
         this.id = id;
         this.playersTurn = playersTurn;
@@ -100,27 +97,8 @@ public class Game implements Serializable {
         }
     }
 
-    public Map<String, Integer> getLetterCount() {
-        return letterCount;
-    }
-
     public long getUpdated() {
         return updated;
-    }
-
-    public void setLetterCount(Map<String, Integer> letterCount) {
-        this.letterCount = letterCount;
-    }
-
-    public List<String> getRemainingLetters() {
-        ArrayList<String> remainingLetters = new ArrayList<>();
-        //TODO dette må gjøres så brikkene kommer i riktig rekkefølge
-        for (Map.Entry<String, Integer> entry : letterCount.entrySet()) {
-            for (int i = 0; i < entry.getValue(); i++) {
-                remainingLetters.add(entry.getKey());
-            }
-        }
-        return remainingLetters;
     }
 
     public boolean getIsRunning() {
@@ -129,5 +107,13 @@ public class Game implements Serializable {
 
     public boolean getPlayersTurn() {
         return playersTurn;
+    }
+
+    public List<String> getRemainingLetters() {
+        return remainingLetters;
+    }
+
+    public void setRemainingLetters(final List<String> remainingLetters) {
+        this.remainingLetters = remainingLetters;
     }
 }

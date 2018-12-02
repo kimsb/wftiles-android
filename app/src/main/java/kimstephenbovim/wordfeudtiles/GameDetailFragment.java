@@ -148,7 +148,6 @@ public class GameDetailFragment extends Fragment {
             alert(isOnline() ? "" : Texts.shared.getText("connectionError"));
             return;
         }
-        System.out.println("I Fragment, updater: " + game.getLetterCount().toString());
         updateView();
     }
 

@@ -3,9 +3,7 @@ package kimstephenbovim.wordfeudtiles;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +21,10 @@ public class Constants {
     private String[][] letters;
     private String[] locales = {"en", "nb", "nl", "da", "sv", "en", "es", "fr", "sv", "de", "nb", "fi", "pt"};
 
+    public Locale getLocale(final int ruleset) {
+        return new Locale(locales[ruleset]);
+    }
+
     public HashMap<String, Integer> getCounts(int ruleset) {
         if (Texts.shared.unsupportedLanguage(ruleset)) {
             return new HashMap<>();
@@ -35,24 +37,6 @@ public class Constants {
             return new HashMap<>();
         }
         return copyOfMap(points[ruleset]);
-    }
-
-    public String[] getLetters(int ruleset) {
-        if (Texts.shared.unsupportedLanguage(ruleset)) {
-            //TODO hva bør returneres her?
-            //må ikke knekke om nytt språk innføres
-            return new String[0];
-        }
-        //TODO
-        /*if WFTiles.instance.sortByVowels() {
-            return letters[ruleset]
-        }*/
-
-        String[] letterArray = Arrays.copyOf(letters[ruleset], letters[ruleset].length);
-        Collator coll = Collator.getInstance(new Locale(locales[ruleset]));
-        coll.setStrength(Collator.PRIMARY);
-        Arrays.sort(letterArray, coll);
-        return letterArray;
     }
 
     private Constants() {
@@ -109,11 +93,11 @@ public class Constants {
 
         int span = (availableWidth + minSpacing) / (tileSize + minSpacing);
 
-        int extraSpacing = availableWidth - (span * tileSize) - ((span-1) * minSpacing);
+        int extraSpacing = availableWidth - (span * tileSize) - ((span - 1) * minSpacing);
         int spacing = minSpacing;
-        while (extraSpacing > span-1) {
+        while (extraSpacing > span - 1) {
             spacing++;
-            extraSpacing -= span-1;
+            extraSpacing -= span - 1;
         }
 
         int extraMargin = extraSpacing > 0
@@ -124,14 +108,14 @@ public class Constants {
         int column = 0;
         int row = 0;
         for (int i = 0; i < 97; i++) {
-            int rowPlusTile = row * (tileSize+spacing);
-            int columnPlusTile = extraMargin + column * (tileSize+spacing);
+            int rowPlusTile = row * (tileSize + spacing);
+            int columnPlusTile = extraMargin + column * (tileSize + spacing);
             parameters.add(new TileParameters(rowPlusTile + minMargin,
                     rowPlusTile + tileSize + minMargin,
                     columnPlusTile + tileSize,
                     columnPlusTile,
-                    columnPlusTile + (tileSize/2),
-                    rowPlusTile + tileSize - (tileSize/5) + minMargin,
+                    columnPlusTile + (tileSize / 2),
+                    rowPlusTile + tileSize - (tileSize / 5) + minMargin,
                     Math.round(columnPlusTile + (tileSize * 0.9f)),
                     Math.round(rowPlusTile + (tileSize * 0.3f)) + minMargin));
             if (++column == span) {
