@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+
 public class Constants {
 
     public static Constants shared = new Constants();
@@ -16,7 +19,7 @@ public class Constants {
     public static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
     public static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
 
-    public List<TileParameters> tileParameters;
+    public Map<Integer, List<TileParameters>> tileParameters = new HashMap<>();
     private HashMap[] counts, points;
     private String[][] letters;
     private String[] locales = {"en", "nb", "nl", "da", "sv", "en", "es", "fr", "sv", "de", "nb", "fi", "pt"};
@@ -69,27 +72,30 @@ public class Constants {
         letters = new String[][]{englishLetters, norwegianLetters, dutchLetters, danishLetters, swedishLetters, englishLetters,
                 spanishLetters, frenchLetters, swedishLetters, germanLetters, norwegianLetters, finnishLetters, portugeseLetters};
 
-        tileParameters = calculateTileParameters();
+        tileParameters.put(ORIENTATION_PORTRAIT, calculateTileParameters(ORIENTATION_PORTRAIT));
+        tileParameters.put(ORIENTATION_LANDSCAPE, calculateTileParameters(ORIENTATION_LANDSCAPE));
     }
 
-    public int availableWidth(boolean portraitOrientation) {
-        //TODO ta hensyn til orientation
+    int availableWidth(final int orientation) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         int minMargin = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.min_margin));
-        return metrics.widthPixels - (minMargin * 2);
+        int width = metrics.widthPixels - (minMargin * 2);
+        int height = metrics.heightPixels - (minMargin * 2);
+        return orientation == ORIENTATION_PORTRAIT
+                ? Math.min(width, height)
+                : Math.max(width, height);
     }
 
-    private List<TileParameters> calculateTileParameters() {
+    //TODO save disse, så man bare trenger å regne ut én gang
+    private List<TileParameters> calculateTileParameters(final int orientation) {
         ArrayList<TileParameters> parameters = new ArrayList<>();
-        //TODO må gjøre dette for både portrait og landscape
 
         int tileSize = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_width));
-        //TODO bør jeg ha mer slack på minMargin? kanskje 8dp?
         int minMargin = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.min_margin));
         int minSpacing = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_grid_min_space));
 
         //TODO må bruke fragment-width på tablets
-        int availableWidth = availableWidth(true);
+        int availableWidth = availableWidth(orientation);
 
         int span = (availableWidth + minSpacing) / (tileSize + minSpacing);
 

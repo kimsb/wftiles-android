@@ -57,10 +57,6 @@ public class GameDetailFragment extends Fragment {
             //RestClient.getGame(gameId, true);
 
         }
-        if (game != null) {
-
-            draw();
-        }
     }
 
     private void draw() {
@@ -138,6 +134,9 @@ public class GameDetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        if (game != null) {
+            draw();
+        }
     }
 
     @Override

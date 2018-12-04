@@ -29,12 +29,14 @@ public class TileCanvas extends View {
     List<RectF> rects = new ArrayList<>();
     List<String> letters;
     Map<String, Integer> points;
+    int orientation;
 
     public TileCanvas(Context context, List<String> letters, Map<String, Integer> points) {
         super(context);
 
         this.letters = letters;
         this.points = points;
+        orientation = context.getResources().getConfiguration().orientation;
 
         fillPaint.setStyle(FILL);
         fillPaint.setColor(getResources().getColor(R.color.tileColor));
@@ -61,9 +63,11 @@ public class TileCanvas extends View {
         scorePaint.setStyle(FILL);
         scorePaint.setTextAlign(RIGHT);
 
+        List<TileParameters> tileParameterList = Constants.shared.tileParameters.get(orientation);
+
         if (letters != null) {
             for (int i = 0; i < letters.size(); i++) {
-                TileParameters tileParameters = Constants.shared.tileParameters.get(i);
+                TileParameters tileParameters = tileParameterList.get(i);
 
                 rects.add(new RectF((float) tileParameters.left,
                         (float) tileParameters.top,
@@ -75,7 +79,7 @@ public class TileCanvas extends View {
         int height = rects.isEmpty()
                 ? 0
                 : Math.round(rects.get(rects.size() - 1).bottom + getResources().getDimension(R.dimen.min_margin));
-        setLayoutParams(new ViewGroup.LayoutParams(Constants.shared.availableWidth(true),
+        setLayoutParams(new ViewGroup.LayoutParams(Constants.shared.availableWidth(orientation),
                 height));
 
         //TODO trenger jeg denne?
@@ -87,9 +91,11 @@ public class TileCanvas extends View {
 
         super.onDraw(canvas);
 
+        List<TileParameters> tileParameterList = Constants.shared.tileParameters.get(orientation);
+
         if (letters != null) {
             for (int i = 0; i < letters.size(); i++) {
-                TileParameters tileParameters = Constants.shared.tileParameters.get(i);
+                TileParameters tileParameters = tileParameterList.get(i);
                 RectF rectF = rects.get(i);
                 String letter = letters.get(i);
                 canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, fillPaint);
