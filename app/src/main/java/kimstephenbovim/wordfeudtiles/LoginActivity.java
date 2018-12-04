@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,16 +30,9 @@ import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
-    // UI references.
+    private UserLoginTask authTask = null;
     private EditText usernameView;
     private EditText passwordView;
-    private View mProgressView;
-    private View mLoginFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +62,10 @@ public class LoginActivity extends AppCompatActivity {
         loginInfo.setText(Texts.shared.getText("loginInfo"));
 
         usernameView = findViewById(R.id.login_username);
+        usernameView.setImeActionLabel(Texts.shared.getText("next"), 5);
         passwordView = findViewById(R.id.login_password);
+        passwordView.setImeActionLabel(Texts.shared.getText("login"), 6);
+
         final User user = WFTiles.instance.getUser();
         if (user == null) {
             usernameView.setHint(Texts.shared.getText("usernameEmail"));
@@ -76,6 +73,9 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             usernameView.setText("email".equals(user.getLoginMethod()) ? user.getEmail() : user.getUsername());
             passwordView.setText(user.getPassword());
+            passwordView.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.showSoftInput(passwordView, InputMethodManager.SHOW_IMPLICIT);
         }
 
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -97,13 +97,10 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
     }
 
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if (authTask != null) {
             return;
         }
 
@@ -122,8 +119,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        mAuthTask = new UserLoginTask(username, password);
-        mAuthTask.execute((Void) null);
+        authTask = new UserLoginTask(username, password);
+        authTask.execute((Void) null);
     }
 
     /**
@@ -154,19 +151,16 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
+            authTask = null;
 
-            if (success) {
-                System.out.println("success!");
-            } else {
-                passwordView.setError(getString(R.string.error_incorrect_password));
-                passwordView.requestFocus();
+            if (!success) {
+                System.out.println("authTask feiler!");
             }
         }
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+            authTask = null;
         }
     }
 

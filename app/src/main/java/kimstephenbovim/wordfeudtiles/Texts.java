@@ -61,6 +61,8 @@ public class Texts {
 
         texts.put("password", new String[]{"Wordfeud password", "Wordfeud-passord", "Voer je wachtwoord in", "Indtast din adgangskode", "Ange ditt lösenord", "Introducir contraseña", "Saisis ton mot de passe", "Passwort eingeben", "Anna salasana", "Digite Sua Senha"});
 
+        texts.put("next", new String[]{"Next", "Neste", "Volgende", "Næste", "Nästa", "Siguiente", "Suivant", "Weiter", "Seuraava", "Seguinte"});
+
         texts.put("login", new String[]{"Log in", "Logg inn", "Inloggen", "Log på", "Logga inn", "Iniciar sesión", "Connexion", "Anmelden", "Kirjaudu", "Entrar"});
 
         texts.put("logout", new String[]{"Log out", "Logg ut", "Uitloggen", "Log af", "Logga ut", "Desconectarse", "Se déconnecter", "Abmelden", "Kirjaudu ulos", "Sair"});
