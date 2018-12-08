@@ -29,14 +29,13 @@ public class TileCanvas extends View {
     List<RectF> rects = new ArrayList<>();
     List<String> letters;
     Map<String, Integer> points;
-    int orientation;
+    List<TileParameters> tileParameterList;
 
     public TileCanvas(Context context, List<String> letters, Map<String, Integer> points) {
         super(context);
 
         this.letters = letters;
         this.points = points;
-        orientation = context.getResources().getConfiguration().orientation;
 
         fillPaint.setStyle(FILL);
         fillPaint.setColor(getResources().getColor(R.color.tileColor));
@@ -63,7 +62,7 @@ public class TileCanvas extends View {
         scorePaint.setStyle(FILL);
         scorePaint.setTextAlign(RIGHT);
 
-        List<TileParameters> tileParameterList = Constants.shared.tileParameters.get(orientation);
+        tileParameterList = Constants.shared.getTileParameters();
 
         if (letters != null) {
             for (int i = 0; i < letters.size(); i++) {
@@ -79,8 +78,7 @@ public class TileCanvas extends View {
         int height = rects.isEmpty()
                 ? 0
                 : Math.round(rects.get(rects.size() - 1).bottom + getResources().getDimension(R.dimen.min_margin));
-        setLayoutParams(new ViewGroup.LayoutParams(Constants.shared.availableWidth(orientation),
-                height));
+        setLayoutParams(new ViewGroup.LayoutParams(Constants.shared.getAvailableWidth(), height));
 
         //TODO trenger jeg denne?
         setFocusableInTouchMode(true);
@@ -88,10 +86,7 @@ public class TileCanvas extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         super.onDraw(canvas);
-
-        List<TileParameters> tileParameterList = Constants.shared.tileParameters.get(orientation);
 
         if (letters != null) {
             for (int i = 0; i < letters.size(); i++) {

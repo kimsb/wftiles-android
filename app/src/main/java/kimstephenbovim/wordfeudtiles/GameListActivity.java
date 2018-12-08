@@ -2,6 +2,7 @@ package kimstephenbovim.wordfeudtiles;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -39,62 +40,53 @@ import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
 
-/**
- * An activity representing a list of Games. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link GameDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
 public class GameListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
     private boolean isTwoPane;
     private List<Game> games;
     private boolean isCreated;
+    private String appbarTitleSpacing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
 
-        // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            if (WFTiles.instance.getUser() == null) {
-                System.out.println("Må først logge på...");
-            } else {
+            if (WFTiles.instance.getUser() != null) {
                 actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername());
             }
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        //findViewById(R.id.app_toolbar_title);
-        //toolbar.setTitle(getTitle());
-
-        /*Glide.with(this)
-                .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + WFTiles.instance.getUser().getId())
-                .apply(RequestOptions.circleCropTransform())
-                .into((ImageView) findViewById(R.id.app_toolbar_image));*/
-
         if (findViewById(R.id.game_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             isTwoPane = true;
+            setAppbarTitleSpacing();
         }
 
         setupRecyclerView(WFTiles.instance.getGames());
 
         RestClient.getGames(true);
+    }
+
+    private void setAppbarTitleSpacing() {
+        Paint paint = new Paint();
+        paint.setTextSize(getResources().getDimension(R.dimen.appbar_textsize));
+        float playerNameWidth = paint.measureText(WFTiles.instance.getUser().presentableFullUsername());
+        float spaceWidth = paint.measureText(" ");
+
+        float opponentPosition = getResources().getDimension(R.dimen.twopane_opponent_position);
+        float spaceCount = (opponentPosition - playerNameWidth) / spaceWidth;
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < spaceCount; i++) {
+            builder.append(" ");
+        }
+        appbarTitleSpacing = builder.append("     ").toString();
     }
 
     @Override
@@ -117,7 +109,6 @@ public class GameListActivity extends AppCompatActivity {
     }
 
     public void setupRecyclerView(List<Game> games) {
-        System.out.println("setupRecyclerView called");
         this.games = games;
         RecyclerView recyclerView = findViewById(R.id.game_list);
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, Mapper.mapGamesToGameRows(games), isTwoPane));
@@ -145,6 +136,12 @@ public class GameListActivity extends AppCompatActivity {
                     parentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.game_detail_container, fragment, "her_er_min_tag")
                             .commit();
+
+                    parentActivity.getSupportActionBar().setTitle(WFTiles.instance.getUser().presentableFullUsername()
+                            + parentActivity.appbarTitleSpacing
+                            + game.getOpponent().presentableUsername());
+                    RestClient.getGames(true);
+
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, GameDetailActivity.class);
