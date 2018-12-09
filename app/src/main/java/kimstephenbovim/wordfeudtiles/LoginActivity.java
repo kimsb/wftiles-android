@@ -184,6 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                 LoginActivity loginActivity = LoginActivity.this;
                 Intent intent = new Intent(loginActivity, GameListActivity.class);
                 loginActivity.startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
             case WRONG_PASSWORD:
                 System.out.println("Feil passord");

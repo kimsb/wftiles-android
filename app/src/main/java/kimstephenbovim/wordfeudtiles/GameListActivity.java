@@ -103,6 +103,7 @@ public class GameListActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(MESSAGE_SKIP_LOGIN, false);
             NavUtils.navigateUpTo(this, intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -149,6 +150,7 @@ public class GameListActivity extends AppCompatActivity {
                     intent.putExtra(MESSAGE_OPPONENT_NAME, game.getOpponent().presentableUsername());
 
                     context.startActivity(intent);
+                    parentActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
         };
@@ -264,6 +266,12 @@ public class GameListActivity extends AppCompatActivity {
         } else {
             isCreated = true;
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
