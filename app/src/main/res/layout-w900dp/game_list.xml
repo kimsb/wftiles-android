@@ -12,25 +12,18 @@
     android:showDividers="middle"
     tools:context=".GameListActivity">
 
-    <!--
-    This layout is a two-pane layout for the Games
-    master/detail flow.
-    
-    -->
-
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/game_list"
         android:name="kimstephenbovim.wordfeudtiles.GameListFragment"
         android:layout_width="@dimen/two_pane_list_width"
         android:layout_height="match_parent"
-        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="kimstephenbovim.wordfeudtiles.GameListActivity"
         tools:listitem="@layout/game_list_content" />
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -44,6 +37,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

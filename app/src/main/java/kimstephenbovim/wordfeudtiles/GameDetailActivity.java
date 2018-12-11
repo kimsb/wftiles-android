@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
 
 /**
@@ -48,6 +49,7 @@ public class GameDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putLong(MESSAGE_GAME_ID,
                     getIntent().getLongExtra(MESSAGE_GAME_ID, 0));
+            arguments.putBoolean(MESSAGE_IS_TWOPANE, getIntent().getBooleanExtra(MESSAGE_IS_TWOPANE, false));
             GameDetailFragment fragment = new GameDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

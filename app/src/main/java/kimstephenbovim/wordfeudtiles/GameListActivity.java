@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
@@ -46,6 +48,8 @@ public class GameListActivity extends AppCompatActivity {
     private List<Game> games;
     private boolean isCreated;
     private String appbarTitleSpacing;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private Long selectedGameId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,19 @@ public class GameListActivity extends AppCompatActivity {
         setupRecyclerView(WFTiles.instance.getGames());
 
         RestClient.getGames(true);
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        RestClient.getGames(true);
+                        if (isTwoPane && selectedGameId != null) {
+                            RestClient.getGame(selectedGameId, false);
+                        }
+                    }
+                }
+        );
     }
 
     private void setAppbarTitleSpacing() {
@@ -129,9 +146,11 @@ public class GameListActivity extends AppCompatActivity {
                 RestClient.getGame(game.getId(), true);
 
                 if (isTwoPane) {
+                    parentActivity.selectedGameId = game.getId();
                     Bundle arguments = new Bundle();
                     arguments.putLong(MESSAGE_GAME_ID, game.getId());
                     arguments.putString(MESSAGE_OPPONENT_NAME, game.getOpponent().presentableUsername());
+                    arguments.putBoolean(MESSAGE_IS_TWOPANE, true);
                     GameDetailFragment fragment = new GameDetailFragment();
                     fragment.setArguments(arguments);
                     parentActivity.getSupportFragmentManager().beginTransaction()
@@ -148,7 +167,7 @@ public class GameListActivity extends AppCompatActivity {
                     Intent intent = new Intent(context, GameDetailActivity.class);
                     intent.putExtra(MESSAGE_GAME_ID, game.getId());
                     intent.putExtra(MESSAGE_OPPONENT_NAME, game.getOpponent().presentableUsername());
-
+                    intent.putExtra(MESSAGE_IS_TWOPANE, false);
                     context.startActivity(intent);
                     parentActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
@@ -276,6 +295,7 @@ public class GameListActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
+        swipeRefreshLayout.setRefreshing(false);
         if (gamesLoadedEvent.getGames() == null) {
             alert(isOnline() ? "" : Texts.shared.getText("connectionError"));
             return;

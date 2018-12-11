@@ -165,8 +165,8 @@ public class RestClient {
 
                     if (WFTiles.instance.gameIsNewOrUpdated(game)) {
                         WFTiles.instance.setGame(game);
-                        EventBus.getDefault().post(new GameLoadedEvent(game));
                     }
+                    EventBus.getDefault().post(new GameLoadedEvent(game));
                 }
             }
 

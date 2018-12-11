@@ -14,9 +14,8 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <include
-            layout="@layout/app_toolbar"
-            android:id="@+id/app_toolbar">
-        </include>
+            android:id="@+id/app_toolbar"
+            layout="@layout/app_toolbar"></include>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -24,9 +23,17 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/game_list" />
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/game_list" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
     </FrameLayout>
 
 

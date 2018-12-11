@@ -9,30 +9,31 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class Constants {
+class Constants {
 
-    public static Constants shared = new Constants();
-    public static String MESSAGE_SKIP_LOGIN = "MESSAGE_SKIP_LOGIN";
-    public static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
-    public static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
+    static Constants shared = new Constants();
+    static String MESSAGE_SKIP_LOGIN = "MESSAGE_SKIP_LOGIN";
+    static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
+    static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
+    static String MESSAGE_IS_TWOPANE = "MESSAGE_IS_TWOPANE";
 
     private HashMap<Integer, List<TileParameters>> tileParameters = new HashMap<>();
     private HashMap[] counts, points;
     private String[][] letters;
     private String[] locales = {"en", "nb", "nl", "da", "sv", "en", "es", "fr", "sv", "de", "nb", "fi", "pt"};
 
-    public Locale getLocale(final int ruleset) {
+    Locale getLocale(final int ruleset) {
         return new Locale(locales[ruleset]);
     }
 
-    public HashMap<String, Integer> getCounts(int ruleset) {
+    HashMap<String, Integer> getCounts(int ruleset) {
         if (Texts.shared.unsupportedLanguage(ruleset)) {
             return new HashMap<>();
         }
         return copyOfMap(counts[ruleset]);
     }
 
-    public HashMap<String, Integer> getPoints(int ruleset) {
+    HashMap<String, Integer> getPoints(int ruleset) {
         if (Texts.shared.unsupportedLanguage(ruleset)) {
             return new HashMap<>();
         }
@@ -77,7 +78,7 @@ public class Constants {
 
         return metrics.widthPixels / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT) > 900
                 ? Math.round(metrics.widthPixels
-                - (minMargin * 5)
+                - (minMargin * 4)
                 - WFTiles.instance.getResources().getDimension(R.dimen.two_pane_list_width)
                 - WFTiles.instance.getResources().getDimension(R.dimen.linear_layout_divider_width))
                 : metrics.widthPixels - (minMargin * 2);
