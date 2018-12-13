@@ -13,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -69,12 +68,11 @@ public class LoginActivity extends AppCompatActivity {
         if (user == null) {
             usernameView.setHint(Texts.shared.getText("usernameEmail"));
             passwordView.setHint(Texts.shared.getText("password"));
+            usernameView.requestFocus();
         } else {
             usernameView.setText("email".equals(user.getLoginMethod()) ? user.getEmail() : user.getUsername());
             passwordView.setText(user.getPassword());
             passwordView.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.showSoftInput(passwordView, InputMethodManager.SHOW_IMPLICIT);
         }
 
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
