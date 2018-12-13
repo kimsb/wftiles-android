@@ -22,7 +22,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
-import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
@@ -55,17 +54,18 @@ public class GameDetailFragment extends Fragment {
         gameId = getArguments().getLong(MESSAGE_GAME_ID);
         game = WFTiles.instance.getGame(gameId);
 
+        ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
+
         if (getArguments().containsKey(MESSAGE_IS_TWOPANE) && !getArguments().getBoolean(MESSAGE_IS_TWOPANE)) {
             swipeRefreshLayout = getActivity().findViewById(R.id.swipeRefreshDetail);
             swipeRefreshLayout.setOnRefreshListener(
                     new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
-                            RestClient.getGame(gameId, true);
+                            ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
                         }
                     }
             );
-
         }
     }
 
@@ -158,7 +158,7 @@ public class GameDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (isCreated) {
-            RestClient.getGame(gameId, true);
+            ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
         } else {
             isCreated = true;
         }
@@ -166,8 +166,8 @@ public class GameDetailFragment extends Fragment {
 
     private void stopRefreshing() {
         getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+                @Override
+                public void run() {
                 if (swipeRefreshLayout != null) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -177,6 +177,7 @@ public class GameDetailFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(GameLoadedEvent gameLoadedEvent) {
+        ProgressDialogHandler.shared.cancel();
         stopRefreshing();
 
         if (gameLoadedEvent.getGame() == null) {
@@ -189,7 +190,7 @@ public class GameDetailFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(LoginEvent loginEvent) {
-        RestClient.getGame(gameId, false);
+        ProgressDialogHandler.shared.getGame(getActivity(), gameId, false);
     }
 
     private boolean isOnline() {

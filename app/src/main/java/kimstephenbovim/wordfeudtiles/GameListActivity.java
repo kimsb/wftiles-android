@@ -33,7 +33,6 @@ import kimstephenbovim.wordfeudtiles.domain.Game;
 import kimstephenbovim.wordfeudtiles.domain.GameRow;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
-import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
@@ -74,16 +73,16 @@ public class GameListActivity extends AppCompatActivity {
 
         setupRecyclerView(WFTiles.instance.getGames());
 
-        RestClient.getGames(true);
+        ProgressDialogHandler.shared.getGames(this, true);
 
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        RestClient.getGames(true);
+                        ProgressDialogHandler.shared.getGames(GameListActivity.this, true);
                         if (isTwoPane && selectedGameId != null) {
-                            RestClient.getGame(selectedGameId, false);
+                            ProgressDialogHandler.shared.getGame(GameListActivity.this, selectedGameId, false);
                         }
                     }
                 }
@@ -143,7 +142,6 @@ public class GameListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 GameRow gameRow = (GameRow) view.getTag();
                 Game game = gameRow.getGame();
-                RestClient.getGame(game.getId(), true);
 
                 if (isTwoPane) {
                     parentActivity.selectedGameId = game.getId();
@@ -160,8 +158,7 @@ public class GameListActivity extends AppCompatActivity {
                     parentActivity.getSupportActionBar().setTitle(WFTiles.instance.getUser().presentableFullUsername()
                             + parentActivity.appbarTitleSpacing
                             + game.getOpponent().presentableUsername());
-                    RestClient.getGames(true);
-
+                    ProgressDialogHandler.shared.getGames(parentActivity, false);
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, GameDetailActivity.class);
@@ -281,7 +278,10 @@ public class GameListActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         if (isCreated) {
-            RestClient.getGames(true);
+            ProgressDialogHandler.shared.getGames(this, true);
+            if (isTwoPane && selectedGameId != null) {
+                ProgressDialogHandler.shared.getGame(this, selectedGameId, false);
+            }
         } else {
             isCreated = true;
         }
@@ -295,7 +295,7 @@ public class GameListActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
-        swipeRefreshLayout.setRefreshing(false);
+        ProgressDialogHandler.shared.cancel();
         if (gamesLoadedEvent.getGames() == null) {
             alert(isOnline() ? "" : Texts.shared.getText("connectionError"));
             return;
@@ -323,7 +323,7 @@ public class GameListActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(LoginEvent loginEvent) {
         if (loginEvent.getLoginResult() == OK) {
-            RestClient.getGames(false);
+            ProgressDialogHandler.shared.getGames(this, false);
         } else {
             //TODO login har feilet, kan dette skje?
             System.out.println("Login feiler");

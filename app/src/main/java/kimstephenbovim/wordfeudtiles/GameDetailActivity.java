@@ -24,7 +24,7 @@ public class GameDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
 
         // Show the Up button in the action bar.

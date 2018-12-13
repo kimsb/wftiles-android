@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-class Constants {
+public class Constants {
 
-    static Constants shared = new Constants();
+    public static Constants shared = new Constants();
     static String MESSAGE_SKIP_LOGIN = "MESSAGE_SKIP_LOGIN";
     static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
     static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";

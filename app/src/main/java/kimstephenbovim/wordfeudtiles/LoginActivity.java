@@ -24,7 +24,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import kimstephenbovim.wordfeudtiles.domain.User;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
-import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 
@@ -143,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
 
             System.out.println("Attempting login");
 
-            RestClient.login(mEmail.contains("@") ? "email" : "username", mEmail, mPassword);
+            ProgressDialogHandler.shared.login(LoginActivity.this, mEmail.contains("@") ? "email" : "username", mEmail, mPassword);
 
             // TODO: register the new account here.
             return true;
@@ -178,6 +177,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(LoginEvent loginEvent) {
+        ProgressDialogHandler.shared.cancel();
         switch (loginEvent.getLoginResult()) {
             case OK:
                 System.out.println("Jippi! skal åpne games");

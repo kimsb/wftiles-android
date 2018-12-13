@@ -152,10 +152,10 @@ public class RestClient {
                 if ("error".equals(response.body().getStatus())) {
                     System.out.println("getGame feiler med: " + response.body().getGameContent().getType());
                     if ("login_required".equals(response.body().getGameContent().getType())) {
-                            if (attemptRelogin) {
+                        if (attemptRelogin) {
                             reLogin();
                         } else {
-                                EventBus.getDefault().post(new GameLoadedEvent(null));
+                            EventBus.getDefault().post(new GameLoadedEvent(null));
                         }
 
                     }
@@ -182,7 +182,8 @@ public class RestClient {
         try {
             messageDigest = MessageDigest.getInstance("SHA-1");
             messageDigest.update((password + "JarJarBinks9").getBytes("UTF-8"));
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) { }
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {
+        }
         assert messageDigest != null;
         byte[] bytes = messageDigest.digest();
         StringBuilder buffer = new StringBuilder();
