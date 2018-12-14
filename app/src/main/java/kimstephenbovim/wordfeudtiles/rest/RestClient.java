@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -103,7 +104,11 @@ public class RestClient {
                     }
                 } else {
                     EventBus.getDefault().post(new LoginEvent(OK));
-                    WFTiles.instance.setUser(mapToUser(response.body().getLoginContent(), loginMethod, password));
+                    User userLoggedIn = mapToUser(response.body().getLoginContent(), loginMethod, password);
+                    if (WFTiles.instance.getUser() != null && !WFTiles.instance.getUser().getUsername().equals(userLoggedIn.getUsername())) {
+                        WFTiles.instance.setGames(Collections.<Game>emptyList());
+                    }
+                    WFTiles.instance.setUser(userLoggedIn);
                 }
             }
 

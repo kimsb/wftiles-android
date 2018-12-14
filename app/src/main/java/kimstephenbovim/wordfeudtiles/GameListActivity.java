@@ -293,9 +293,21 @@ public class GameListActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+    private void stopRefreshing() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (swipeRefreshLayout != null) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
         ProgressDialogHandler.shared.cancel();
+        stopRefreshing();
         if (gamesLoadedEvent.getGames() == null) {
             alert(isOnline() ? "" : Texts.shared.getText("connectionError"));
             return;
@@ -304,20 +316,7 @@ public class GameListActivity extends AppCompatActivity {
         //TODO refactor game-comparings + all compare-logic outside main thread
         List<Game> loadedGames = gamesLoadedEvent.getGames();
         System.out.println("In Activity, recieved Event for " + loadedGames.size() + " games: ");
-        //if any new -> update view
-        if (loadedGames.size() != games.size()) {
-            setupRecyclerView(loadedGames);
-        } else {
-            for (Game storedGame : games) {
-                for (Game loadedGame : loadedGames) {
-                    if (storedGame.getId() == loadedGame.getId() &&
-                            storedGame.getUpdated() != loadedGame.getUpdated()) {
-                        setupRecyclerView(loadedGames);
-                        return;
-                    }
-                }
-            }
-        }
+        setupRecyclerView(loadedGames);
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
