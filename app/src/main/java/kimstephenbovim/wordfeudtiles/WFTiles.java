@@ -12,16 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
+import kimstephenbovim.wordfeudtiles.domain.Preferences;
 import kimstephenbovim.wordfeudtiles.domain.User;
 
 public class WFTiles extends Application {
 
     private static String INERTNAL_USER = "internal_user";
     private static String INTERNAL_GAMES = "internal_games";
+    private static String INTERNAL_PREFERENCES = "internal_preferences";
 
     public static WFTiles instance;
     private User user;
     private List<Game> games = new ArrayList<>();
+    private Preferences preferences;
 
     public WFTiles() {
         instance = this;
@@ -40,6 +43,30 @@ public class WFTiles extends Application {
     public void setUser(User user) {
         this.user = user;
         writeToFile(INERTNAL_USER, user);
+    }
+
+    public Preferences getPreferences() {
+        if (preferences == null) {
+            Object readObject = readFromFile(INTERNAL_PREFERENCES);
+            if (readObject instanceof Preferences) {
+                preferences = (Preferences) readObject;
+            }
+        }
+        return preferences;
+    }
+
+    private void setPreferences(Preferences preferences) {
+        this.preferences = preferences;
+        writeToFile(INTERNAL_PREFERENCES, preferences);
+    }
+
+    public void setPreferredLocaleIndex(int preferredLocaleIndex) {
+        Preferences preferences = getPreferences();
+        if (preferences == null) {
+            preferences = new Preferences();
+        }
+        preferences.setLocaleIndex(preferredLocaleIndex);
+        setPreferences(preferences);
     }
 
     public List<Game> getGames() {

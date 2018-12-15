@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import kimstephenbovim.wordfeudtiles.domain.Preferences;
+
 public class Texts {
 
     public static Texts shared = new Texts();
     private Map<String, String[]> texts = new HashMap<>();
     private List<String> locales = Arrays.asList("en", "nb", "nl", "da", "sv", "es", "fr", "de", "fi", "pt");
-    private String[] languages = {"englishUS", "norwegianBokmal", "dutch", "danish", "swedish", "englishIntl", "spanish", "french", "swedishStrict",
+    private String[] gameLanguages = {"englishUS", "norwegianBokmal", "dutch", "danish", "swedish", "englishIntl", "spanish", "french", "swedishStrict",
             "german", "norwegianNynorsk", "finnish", "portuguese"};
 
     /*func getMaxFontSize(text: String, maxWidth: CGFloat) -> CGFloat {
@@ -37,21 +39,41 @@ public class Texts {
         return texts.get(key)[getLocaleIndex()];
     }
 
-    public boolean unsupportedLanguage(int ruleset) {
-        return ruleset >= languages.length;
+    boolean unsupportedLanguage(int ruleset) {
+        return ruleset >= gameLanguages.length;
     }
 
-    public String getGameLanguage(int ruleset) {
+    String getGameLanguage(int ruleset) {
         if (unsupportedLanguage(ruleset)) {
             return getText("unsupportedLanguage");
         }
-        return getText(languages[ruleset]);
+        return getText(gameLanguages[ruleset]);
     }
 
-    private int getLocaleIndex() {
-        Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);
-        int index = locales.indexOf(locale.getLanguage());
-        return index == -1 ? 0 : index;
+    CharSequence[] getLocalizedLanguages() {
+        CharSequence[] localizedLanguages = new CharSequence[10];
+        localizedLanguages[0] = getText("englishLanguage");
+        localizedLanguages[1] = getText("norwegianLanguage");
+        localizedLanguages[2] = getText("dutchLanguage");
+        localizedLanguages[3] = getText("danishLanguage");
+        localizedLanguages[4] = getText("swedishLanguage");
+        localizedLanguages[5] = getText("spanishLanguage");
+        localizedLanguages[6] = getText("frenchLanguage");
+        localizedLanguages[7] = getText("germanLanguage");
+        localizedLanguages[8] = getText("finnishLanguage");
+        localizedLanguages[9] = getText("portugueseLanguage");
+        return localizedLanguages;
+    }
+
+    int getLocaleIndex() {
+        Preferences preferences = WFTiles.instance.getPreferences();
+        if (preferences != null) {
+            return preferences.getLocaleIndex();
+        } else {
+            Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);
+            int index = locales.indexOf(locale.getLanguage());
+            return index == -1 ? 0 : index;
+        }
     }
 
     private Texts() {

@@ -14,6 +14,7 @@
     <dimen name="tile_score_font_size">12sp</dimen>
     <dimen name="linear_layout_divider_width">1dp</dimen>
     <dimen name="appbar_textsize">18sp</dimen>
+    <dimen name="alert_dialog_item_height">33dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

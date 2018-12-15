@@ -87,6 +87,10 @@ public class GameListActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        //TODO show this when settings button in action bar is pressed
+        //AlertDialogs.getLanguageDialog(this).show();
+
     }
 
     private void setAppbarTitleSpacing() {
@@ -315,7 +319,6 @@ public class GameListActivity extends AppCompatActivity {
 
         //TODO refactor game-comparings + all compare-logic outside main thread
         List<Game> loadedGames = gamesLoadedEvent.getGames();
-        System.out.println("In Activity, recieved Event for " + loadedGames.size() + " games: ");
         setupRecyclerView(loadedGames);
     }
 
