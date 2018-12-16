@@ -22,8 +22,12 @@ public class Constants {
     private String[][] letters;
     private String[] locales = {"en", "nb", "nl", "da", "sv", "en", "es", "fr", "sv", "de", "nb", "fi", "pt"};
 
-    Locale getLocale(final int ruleset) {
+    public Locale getLocale(final int ruleset) {
         return new Locale(locales[ruleset]);
+    }
+
+    public String[] getLetters(int ruleset) {
+        return letters[ruleset];
     }
 
     HashMap<String, Integer> getCounts(int ruleset) {

@@ -1,8 +1,8 @@
 package kimstephenbovim.wordfeudtiles;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +16,8 @@ import kimstephenbovim.wordfeudtiles.rest.LoginContent;
 import kimstephenbovim.wordfeudtiles.rest.MoveDTO;
 import kimstephenbovim.wordfeudtiles.rest.PlayerDTO;
 
+import static java.util.Arrays.asList;
+
 public class Mapper {
 
     public static Game mapToGame(final GameDTO gameDTO) {
@@ -23,14 +25,12 @@ public class Mapper {
 
         Player loggedInPlayer, opponent;
         if (gameDTO.getPlayers().get(0).getId() == WFTiles.instance.getUser().getId()) {
-            loggedInPlayer = mapToPlayer(gameDTO.getPlayers().get(0));
-            opponent = mapToPlayer(gameDTO.getPlayers().get(1));
+            loggedInPlayer = mapToPlayer(gameDTO.getPlayers().get(0), gameDTO.getRuleset());
+            opponent = mapToPlayer(gameDTO.getPlayers().get(1), gameDTO.getRuleset());
         } else {
-            loggedInPlayer = mapToPlayer(gameDTO.getPlayers().get(1));
-            opponent = mapToPlayer(gameDTO.getPlayers().get(0));
+            loggedInPlayer = mapToPlayer(gameDTO.getPlayers().get(1), gameDTO.getRuleset());
+            opponent = mapToPlayer(gameDTO.getPlayers().get(0), gameDTO.getRuleset());
         }
-
-        loggedInPlayer.setRack(sortByLocale(loggedInPlayer.getRack(), gameDTO.getRuleset()));
 
         List<String> remainingLetters = mapUsedLettersToRemaining(gameDTO.getRuleset(),
                 mapTilesToUsedLetters(gameDTO.getTiles()), loggedInPlayer.getRack());
@@ -54,7 +54,7 @@ public class Mapper {
         return games;
     }
 
-    static Player mapToPlayer(final PlayerDTO playerDTO) {
+    static Player mapToPlayer(final PlayerDTO playerDTO, final int ruleset) {
         return new Player(playerDTO.getUsername(),
                 playerDTO.getId(),
                 playerDTO.getScore(),
@@ -62,7 +62,24 @@ public class Mapper {
                 playerDTO.getFbFirstName(),
                 playerDTO.getFbMiddleName(),
                 playerDTO.getFbLastName(),
-                playerDTO.getRack());
+                rackOrderedByRuleset(playerDTO.getRack(), ruleset),
+                ruleset);
+    }
+
+    private static List<String> rackOrderedByRuleset(List<String> rack, int ruleset) {
+        if (rack == null) {
+            return null;
+        }
+        final List<String> letterOrder = asList(Constants.shared.getLetters(ruleset));
+        Collections.sort(rack, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                int x = letterOrder.indexOf(o1);
+                int y = letterOrder.indexOf(o2);
+                return (x < y) ? -1 : ((x == y) ? 0 : 1);
+            }
+        });
+        return rack;
     }
 
     static Move mapToMove(final MoveDTO moveDTO) {
@@ -102,18 +119,12 @@ public class Mapper {
             letterCount.put(letter, letterCount.get(letter) - 1);
         }
         ArrayList<String> remainingLetters = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : letterCount.entrySet()) {
-            for (int i = 0; i < entry.getValue(); i++) {
-                remainingLetters.add(entry.getKey());
+        for (String letter : Constants.shared.getLetters(ruleset)) {
+            for (int i = 0; i < letterCount.get(letter); i++) {
+                remainingLetters.add(letter);
             }
         }
-        return sortByLocale(remainingLetters, ruleset);
-    }
-
-    private static List<String> sortByLocale(final List<String> unsorted, final int ruleset) {
-        Collator collator = Collator.getInstance(Constants.shared.getLocale(ruleset));
-        Collections.sort(unsorted, collator);
-        return unsorted;
+        return remainingLetters;
     }
 
     private static List<String> mapTilesToUsedLetters(List<List<Object>> tiles) {

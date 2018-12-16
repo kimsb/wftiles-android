@@ -1,8 +1,12 @@
 package kimstephenbovim.wordfeudtiles.domain;
 
 import java.io.Serializable;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import kimstephenbovim.wordfeudtiles.Constants;
 import kimstephenbovim.wordfeudtiles.Texts;
 import kimstephenbovim.wordfeudtiles.WFTiles;
 
@@ -110,7 +114,13 @@ public class Game implements Serializable {
     }
 
     public List<String> getRemainingLetters() {
-        return remainingLetters;
+        if (remainingLetters == null || WFTiles.instance.getPreferences().isSortVowelsConsonants()) {
+            return remainingLetters;
+        }
+        Collator collator = Collator.getInstance(Constants.shared.getLocale(ruleset));
+        ArrayList<String> remainingLettersAlphabetical = new ArrayList<>(remainingLetters);
+        Collections.sort(remainingLettersAlphabetical, collator);
+        return remainingLettersAlphabetical;
     }
 
     public void setRemainingLetters(final List<String> remainingLetters) {
