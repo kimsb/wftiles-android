@@ -52,7 +52,9 @@ public class WFTiles extends Application {
                 preferences = (Preferences) readObject;
             }
         }
-        return preferences;
+        return preferences == null
+                ? new Preferences()
+                : preferences;
     }
 
     private void setPreferences(Preferences preferences) {
@@ -62,10 +64,19 @@ public class WFTiles extends Application {
 
     public void setPreferredLocaleIndex(int preferredLocaleIndex) {
         Preferences preferences = getPreferences();
-        if (preferences == null) {
-            preferences = new Preferences();
-        }
         preferences.setLocaleIndex(preferredLocaleIndex);
+        setPreferences(preferences);
+    }
+
+    public void setPreferredView(boolean viewOverview) {
+        Preferences preferences = getPreferences();
+        preferences.setViewOverview(viewOverview);
+        setPreferences(preferences);
+    }
+
+    public void setPreferredSorting(boolean sortVowelsConsonants) {
+        Preferences preferences = getPreferences();
+        preferences.setSortVowelsConsonants(sortVowelsConsonants);
         setPreferences(preferences);
     }
 

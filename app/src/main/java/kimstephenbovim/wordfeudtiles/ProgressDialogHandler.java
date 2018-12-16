@@ -51,6 +51,11 @@ public class ProgressDialogHandler {
         }, progressDialog.isShowing() ? Math.max(0, 500 - (currentTimeMillis() - progressDialogShown)) : 0);
     }
 
+    public void dismiss() {
+        handler.removeCallbacksAndMessages(null);
+        progressDialog.dismiss();
+    }
+
     public void getGames(Activity activity, boolean attemptRelogin) {
         RestClient.getGames(attemptRelogin);
         restCallStarted = currentTimeMillis();

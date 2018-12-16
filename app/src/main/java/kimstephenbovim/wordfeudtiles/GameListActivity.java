@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
+import static kimstephenbovim.wordfeudtiles.PreferencesMenu.initMenu;
+import static kimstephenbovim.wordfeudtiles.PreferencesMenu.onClicked;
 import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
 
@@ -49,6 +52,7 @@ public class GameListActivity extends AppCompatActivity {
     private String appbarTitleSpacing;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Long selectedGameId;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,15 @@ public class GameListActivity extends AppCompatActivity {
                 actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername());
             }
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+
+                @Override
+                public void onMenuVisibilityChanged(boolean isVisible) {
+                    if (isVisible) {
+                        initMenu(menu);
+                    }
+                }
+            });
         }
 
         if (findViewById(R.id.game_detail_container) != null) {
@@ -87,10 +100,6 @@ public class GameListActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        //TODO show this when settings button in action bar is pressed
-        //AlertDialogs.getLanguageDialog(this).show();
-
     }
 
     private void setAppbarTitleSpacing() {
@@ -110,23 +119,26 @@ public class GameListActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        initMenu(menu);
+
+        this.menu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
+        if (item.getItemId() == android.R.id.home) {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(MESSAGE_SKIP_LOGIN, false);
             NavUtils.navigateUpTo(this, intent);
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        onClicked(item, this);
+        setupRecyclerView(games);
+        return false;
     }
 
     public void setupRecyclerView(List<Game> games) {
@@ -292,9 +304,22 @@ public class GameListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        ProgressDialogHandler.shared.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ProgressDialogHandler.shared.dismiss();
+    }
+
+    @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        ProgressDialogHandler.shared.dismiss();
     }
 
     private void stopRefreshing() {

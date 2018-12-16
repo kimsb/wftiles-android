@@ -130,7 +130,7 @@ public class GameDetailFragment extends Fragment {
         linearLayout.addView(tiles);
     }
 
-    private void updateView() {
+    void updateView() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

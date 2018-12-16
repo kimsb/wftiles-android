@@ -6,19 +6,19 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
+import static kimstephenbovim.wordfeudtiles.PreferencesMenu.initMenu;
+import static kimstephenbovim.wordfeudtiles.PreferencesMenu.onClicked;
 
-/**
- * An activity representing a single Game detail screen. This
- * activity is only used on narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link GameListActivity}.
- */
 public class GameDetailActivity extends AppCompatActivity {
+
+    private Menu menu;
+    private GameDetailFragment gameDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +27,19 @@ public class GameDetailActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
 
-        // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(getIntent().getStringExtra(MESSAGE_OPPONENT_NAME));
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+
+                @Override
+                public void onMenuVisibilityChanged(boolean isVisible) {
+                    if (isVisible) {
+                        initMenu(menu);
+                    }
+                }
+            });
         }
 
         // savedInstanceState is non-null when there is fragment state
@@ -52,6 +60,7 @@ public class GameDetailActivity extends AppCompatActivity {
             arguments.putBoolean(MESSAGE_IS_TWOPANE, getIntent().getBooleanExtra(MESSAGE_IS_TWOPANE, false));
             GameDetailFragment fragment = new GameDetailFragment();
             fragment.setArguments(arguments);
+            gameDetailFragment = fragment;
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.game_detail_container, fragment, "her_er_min_tag")
                     .commit();
@@ -59,26 +68,45 @@ public class GameDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        initMenu(menu);
+
+        this.menu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
             NavUtils.navigateUpTo(this, new Intent(this, GameListActivity.class));
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        onClicked(item, this);
+        if (gameDetailFragment != null) {
+            gameDetailFragment.updateView();
+        }
+        return false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ProgressDialogHandler.shared.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ProgressDialogHandler.shared.dismiss();
     }
 
     @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        ProgressDialogHandler.shared.dismiss();
     }
 }
