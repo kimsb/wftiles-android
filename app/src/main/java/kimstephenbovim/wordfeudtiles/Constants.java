@@ -146,7 +146,7 @@ public class Constants {
         ArrayList<TileOverviewParameters> parameters = new ArrayList<>();
 
         int tileSize = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_width));
-        int tileOverviewSize = tileSize * 2;
+        int tileOverviewSize = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_overview_width));
         int minMargin = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.min_margin));
         int minSpacing = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_grid_min_space));
 
