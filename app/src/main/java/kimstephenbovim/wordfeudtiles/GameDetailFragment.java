@@ -4,7 +4,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,6 @@ import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
-import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 
 /**
  * A fragment representing a single Game detail screen.
@@ -38,7 +36,6 @@ public class GameDetailFragment extends Fragment {
     private Game game;
     private long gameId;
     private boolean isCreated;
-    private SwipeRefreshLayout swipeRefreshLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,18 +52,6 @@ public class GameDetailFragment extends Fragment {
         game = WFTiles.instance.getGame(gameId);
 
         ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
-
-        if (getArguments().containsKey(MESSAGE_IS_TWOPANE) && !getArguments().getBoolean(MESSAGE_IS_TWOPANE)) {
-            swipeRefreshLayout = getActivity().findViewById(R.id.swipeRefreshDetail);
-            swipeRefreshLayout.setOnRefreshListener(
-                    new SwipeRefreshLayout.OnRefreshListener() {
-                        @Override
-                        public void onRefresh() {
-                            ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
-                        }
-                    }
-            );
-        }
     }
 
     private void draw() {
@@ -169,10 +154,11 @@ public class GameDetailFragment extends Fragment {
 
     private void stopRefreshing() {
         getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout.setRefreshing(false);
+            @Override
+            public void run() {
+                GameDetailActivity gameDetailActivity = (GameDetailActivity) getActivity();
+                if (gameDetailActivity.swipeRefreshLayout != null) {
+                    gameDetailActivity.swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });

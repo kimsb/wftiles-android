@@ -3,6 +3,7 @@ package kimstephenbovim.wordfeudtiles;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +20,7 @@ public class GameDetailActivity extends AppCompatActivity {
 
     private Menu menu;
     private GameDetailFragment gameDetailFragment;
+    public SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,18 @@ public class GameDetailActivity extends AppCompatActivity {
                     .add(R.id.game_detail_container, fragment, "her_er_min_tag")
                     .commit();
         }
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshDetail);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        ProgressDialogHandler.shared.getGame(GameDetailActivity.this, getIntent().getLongExtra(MESSAGE_GAME_ID, 0), true);
+                    }
+                }
+        );
+
+
     }
 
     @Override
