@@ -38,6 +38,7 @@ import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SHOW_TWOPANE_GAME;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 import static kimstephenbovim.wordfeudtiles.PreferencesMenu.initMenu;
 import static kimstephenbovim.wordfeudtiles.PreferencesMenu.onClicked;
@@ -101,6 +102,15 @@ public class GameListActivity extends AppCompatActivity {
                     }
                 }
         );
+        long showGameId = getIntent().getLongExtra(MESSAGE_SHOW_TWOPANE_GAME, 0);
+        if (isTwoPane && showGameId != 0) {
+            for (Game game : games) {
+                if (game.getId() == showGameId) {
+                    showTwoPaneGame(this, game);
+                    break;
+                }
+            }
+        }
     }
 
     private void setAppbarTitleSpacing() {
@@ -151,6 +161,24 @@ public class GameListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, Mapper.mapGamesToGameRows(games), isTwoPane));
     }
 
+    void showTwoPaneGame(GameListActivity gameListActivity, Game game) {
+        Bundle arguments = new Bundle();
+        arguments.putLong(MESSAGE_GAME_ID, game.getId());
+        arguments.putString(MESSAGE_OPPONENT_NAME, game.getOpponent().presentableUsername());
+        arguments.putBoolean(MESSAGE_IS_TWOPANE, true);
+        GameDetailFragment fragment = new GameDetailFragment();
+        fragment.setArguments(arguments);
+        gameListActivity.gameDetailFragment = fragment;
+        gameListActivity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.game_detail_container, fragment, "her_er_min_tag")
+                .commit();
+
+        gameListActivity.getSupportActionBar().setTitle(WFTiles.instance.getUser().presentableFullUsername()
+                + gameListActivity.appbarTitleSpacing
+                + game.getOpponent().presentableUsername());
+        ProgressDialogHandler.shared.getGames(gameListActivity, false);
+    }
+
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -165,21 +193,7 @@ public class GameListActivity extends AppCompatActivity {
 
                 if (isTwoPane) {
                     parentActivity.selectedGameId = game.getId();
-                    Bundle arguments = new Bundle();
-                    arguments.putLong(MESSAGE_GAME_ID, game.getId());
-                    arguments.putString(MESSAGE_OPPONENT_NAME, game.getOpponent().presentableUsername());
-                    arguments.putBoolean(MESSAGE_IS_TWOPANE, true);
-                    GameDetailFragment fragment = new GameDetailFragment();
-                    fragment.setArguments(arguments);
-                    parentActivity.gameDetailFragment = fragment;
-                    parentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.game_detail_container, fragment, "her_er_min_tag")
-                            .commit();
-
-                    parentActivity.getSupportActionBar().setTitle(WFTiles.instance.getUser().presentableFullUsername()
-                            + parentActivity.appbarTitleSpacing
-                            + game.getOpponent().presentableUsername());
-                    ProgressDialogHandler.shared.getGames(parentActivity, false);
+                    parentActivity.showTwoPaneGame(parentActivity, game);
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, GameDetailActivity.class);

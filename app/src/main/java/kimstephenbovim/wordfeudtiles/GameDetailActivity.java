@@ -1,18 +1,21 @@
 package kimstephenbovim.wordfeudtiles;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SHOW_TWOPANE_GAME;
 import static kimstephenbovim.wordfeudtiles.PreferencesMenu.initMenu;
 import static kimstephenbovim.wordfeudtiles.PreferencesMenu.onClicked;
 
@@ -25,6 +28,16 @@ public class GameDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //for orientation change from portrait -> landscape when landscape is two-pane size
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        if (metrics.widthPixels / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT) > 900) {
+            GameDetailActivity gameDetailActivity = GameDetailActivity.this;
+            Intent intent = new Intent(gameDetailActivity, GameListActivity.class);
+            intent.putExtra(MESSAGE_SHOW_TWOPANE_GAME, getIntent().getLongExtra(MESSAGE_GAME_ID, 0));
+            gameDetailActivity.startActivity(intent);
+        }
+
         setContentView(R.layout.activity_game_detail);
         Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);

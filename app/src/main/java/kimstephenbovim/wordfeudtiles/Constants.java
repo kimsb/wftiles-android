@@ -16,6 +16,7 @@ public class Constants {
     static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
     static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
     static String MESSAGE_IS_TWOPANE = "MESSAGE_IS_TWOPANE";
+    static String MESSAGE_SHOW_TWOPANE_GAME = "MESSAGE_SHOW_TWOPANE_GAME";
 
     private HashMap<Integer, List<TileParameters>> tileParameters = new HashMap<>();
     private HashMap<Integer, List<TileOverviewParameters>> tileOverviewParameters = new HashMap<>();

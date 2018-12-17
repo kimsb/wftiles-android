@@ -4,6 +4,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,11 @@ public class GameDetailFragment extends Fragment {
 
     private void draw() {
         LinearLayout linearLayout = getActivity().findViewById(R.id.game_detail_container);
+
+        if (linearLayout == null) {
+            return;
+        }
+
         linearLayout.removeAllViews();
 
         View header = LayoutInflater.from(getActivity())
@@ -153,12 +159,15 @@ public class GameDetailFragment extends Fragment {
     }
 
     private void stopRefreshing() {
-        getActivity().runOnUiThread(new Runnable() {
+        final FragmentActivity activity = getActivity();
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                GameDetailActivity gameDetailActivity = (GameDetailActivity) getActivity();
-                if (gameDetailActivity.swipeRefreshLayout != null) {
-                    gameDetailActivity.swipeRefreshLayout.setRefreshing(false);
+                if (activity instanceof GameDetailActivity) {
+                    GameDetailActivity gameDetailActivity = (GameDetailActivity) activity;
+                    if (gameDetailActivity.swipeRefreshLayout != null) {
+                        gameDetailActivity.swipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             }
         });
