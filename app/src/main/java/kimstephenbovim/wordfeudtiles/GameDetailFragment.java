@@ -126,8 +126,11 @@ public class GameDetailFragment extends Fragment {
         }
         linearLayout.addView(remainingTilesHeader);
 
-        TileCanvas tiles = new TileCanvas(getActivity(), game.getRemainingLetters(), Constants.shared.getPoints(game.getRuleset()));
-        linearLayout.addView(tiles);
+        if (WFTiles.instance.getPreferences().isViewOverview()) {
+            linearLayout.addView(new TileOverviewCanvas(getActivity(), game.getRemainingLetters(), game.getRuleset()));
+        } else {
+            linearLayout.addView(new TileCanvas(getActivity(), game.getRemainingLetters(), Constants.shared.getPoints(game.getRuleset())));
+        }
     }
 
     void updateView() {

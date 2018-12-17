@@ -18,6 +18,7 @@ public class Constants {
     static String MESSAGE_IS_TWOPANE = "MESSAGE_IS_TWOPANE";
 
     private HashMap<Integer, List<TileParameters>> tileParameters = new HashMap<>();
+    private HashMap<Integer, List<TileOverviewParameters>> tileOverviewParameters = new HashMap<>();
     private HashMap[] counts, points;
     private String[][] letters;
     private String[] locales = {"en", "nb", "nl", "da", "sv", "en", "es", "fr", "sv", "de", "nb", "fi", "pt"};
@@ -133,6 +134,58 @@ public class Constants {
             }
         }
         tileParameters.put(availableWidth, parameters);
+        return parameters;
+    }
+
+    List<TileOverviewParameters> getTileOverviewParameters() {
+        int availableWidth = getAvailableWidth();
+        if (tileOverviewParameters.containsKey(availableWidth)) {
+            return tileOverviewParameters.get(availableWidth);
+        }
+
+        ArrayList<TileOverviewParameters> parameters = new ArrayList<>();
+
+        int tileSize = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_width));
+        int tileOverviewSize = tileSize * 2;
+        int minMargin = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.min_margin));
+        int minSpacing = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.tile_grid_min_space));
+
+        int span = (availableWidth + minSpacing) / (tileOverviewSize + minSpacing);
+
+        int extraSpacing = availableWidth - (span * tileOverviewSize) - ((span - 1) * minSpacing);
+        int spacing = minSpacing;
+        while (extraSpacing > span - 1) {
+            spacing++;
+            extraSpacing -= span - 1;
+        }
+
+        int extraMargin = extraSpacing > 0
+                ? Math.round(extraSpacing / 2f)
+                : 0;
+
+        //TODO kan det noen gang være mer enn 30 (german) forskjellige brikker?
+        int column = 0;
+        int row = 0;
+        for (int i = 0; i < 30; i++) {
+            int rowPlusTile = row * (tileSize + spacing);
+            int columnPlusTile = extraMargin + column * (tileOverviewSize + spacing);
+            parameters.add(new TileOverviewParameters(rowPlusTile + minMargin,
+                    rowPlusTile + tileSize + minMargin,
+                    columnPlusTile + tileOverviewSize,
+                    columnPlusTile,
+                    columnPlusTile + tileSize,
+                    columnPlusTile + (tileSize / 2),
+                    rowPlusTile + tileSize - (tileSize / 5) + minMargin,
+                    Math.round(columnPlusTile + (tileSize * 0.9f)),
+                    Math.round(rowPlusTile + (tileSize * 0.3f)) + minMargin,
+                    Math.round(columnPlusTile + tileSize + (tileSize * 0.1f)),
+                    Math.round(rowPlusTile + tileSize - (tileSize * 0.3f) + minMargin)));
+            if (++column == span) {
+                column = 0;
+                row++;
+            }
+        }
+        tileOverviewParameters.put(availableWidth, parameters);
         return parameters;
     }
 
