@@ -22,7 +22,7 @@ import static kimstephenbovim.wordfeudtiles.PreferencesMenu.onClicked;
 public class GameDetailActivity extends AppCompatActivity {
 
     private Menu menu;
-    private GameDetailFragment gameDetailFragment;
+    GameDetailFragment gameDetailFragment;
     public SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -75,7 +75,6 @@ public class GameDetailActivity extends AppCompatActivity {
             arguments.putBoolean(MESSAGE_IS_TWOPANE, getIntent().getBooleanExtra(MESSAGE_IS_TWOPANE, false));
             GameDetailFragment fragment = new GameDetailFragment();
             fragment.setArguments(arguments);
-            gameDetailFragment = fragment;
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.game_detail_container, fragment, "her_er_min_tag")
                     .commit();

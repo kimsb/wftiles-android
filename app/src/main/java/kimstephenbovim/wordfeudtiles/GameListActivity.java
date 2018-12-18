@@ -54,7 +54,7 @@ public class GameListActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private Long selectedGameId;
     private Menu menu;
-    private GameDetailFragment gameDetailFragment;
+    GameDetailFragment gameDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,7 +168,6 @@ public class GameListActivity extends AppCompatActivity {
         arguments.putBoolean(MESSAGE_IS_TWOPANE, true);
         GameDetailFragment fragment = new GameDetailFragment();
         fragment.setArguments(arguments);
-        gameListActivity.gameDetailFragment = fragment;
         gameListActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.game_detail_container, fragment, "her_er_min_tag")
                 .commit();

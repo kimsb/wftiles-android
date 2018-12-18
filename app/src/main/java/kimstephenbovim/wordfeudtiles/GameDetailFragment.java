@@ -26,22 +26,12 @@ import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 
-/**
- * A fragment representing a single Game detail screen.
- * This fragment is either contained in a {@link GameListActivity}
- * in two-pane mode (on tablets) or a {@link GameDetailActivity}
- * on handsets.
- */
 public class GameDetailFragment extends Fragment {
 
     private Game game;
     private long gameId;
     private boolean isCreated;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public GameDetailFragment() {
     }
 
@@ -53,6 +43,14 @@ public class GameDetailFragment extends Fragment {
         game = WFTiles.instance.getGame(gameId);
 
         ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
+        FragmentActivity activity = getActivity();
+        if (activity instanceof GameDetailActivity) {
+            GameDetailActivity gameDetailActivity = (GameDetailActivity) activity;
+            gameDetailActivity.gameDetailFragment = this;
+        } else if (activity instanceof GameListActivity) {
+            GameListActivity gameListActivity = (GameListActivity) activity;
+            gameListActivity.gameDetailFragment = this;
+        }
     }
 
     private void draw() {
