@@ -3,9 +3,12 @@ package kimstephenbovim.wordfeudtiles;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -23,6 +26,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,12 +69,24 @@ public class GameListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
 
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             if (WFTiles.instance.getUser() != null) {
                 actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername());
             }
             actionBar.setDisplayHomeAsUpEnabled(true);
+            Glide.with(this)
+                    .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + WFTiles.instance.getUser().getId())
+                    .apply(RequestOptions.circleCropTransform())
+                    .apply(RequestOptions.placeholderOf(R.drawable.arrow_back))
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource,
+                                                    @Nullable Transition<? super Drawable> transition) {
+                            actionBar.setHomeAsUpIndicator(resource);
+                        }
+                    });
+
             actionBar.addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
 
                 @Override
