@@ -29,10 +29,16 @@ import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 public class GameDetailFragment extends Fragment {
 
     private Game game;
-    private long gameId;
+    public long gameId;
     private boolean isCreated;
 
     public GameDetailFragment() {
+    }
+
+    public String getOpponentUsername() {
+        return game == null || game.getOpponent() == null
+                ? ""
+                : game.getOpponent().presentableUsername();
     }
 
     @Override

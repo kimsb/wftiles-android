@@ -31,7 +31,7 @@ public class GameDetailActivity extends AppCompatActivity {
 
         //for orientation change from portrait -> landscape when landscape is two-pane size
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        if (metrics.widthPixels / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT) > 900) {
+        if (metrics.widthPixels / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT) >= 700) {
             GameDetailActivity gameDetailActivity = GameDetailActivity.this;
             Intent intent = new Intent(gameDetailActivity, GameListActivity.class);
             intent.putExtra(MESSAGE_SHOW_TWOPANE_GAME, getIntent().getLongExtra(MESSAGE_GAME_ID, 0));

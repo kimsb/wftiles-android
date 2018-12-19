@@ -82,7 +82,7 @@ public class Constants {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         int minMargin = Math.round(WFTiles.instance.getResources().getDimension(R.dimen.min_margin));
 
-        return metrics.widthPixels / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT) > 900
+        return metrics.widthPixels / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT) >= 700
                 ? Math.round(metrics.widthPixels
                 - (minMargin * 4)
                 - WFTiles.instance.getResources().getDimension(R.dimen.two_pane_list_width)
