@@ -67,7 +67,7 @@ public class Texts {
 
     int getLocaleIndex() {
         Preferences preferences = WFTiles.instance.getPreferences();
-        if (preferences != null) {
+        if (preferences.getLocaleIndex() != -1) {
             return preferences.getLocaleIndex();
         } else {
             Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);

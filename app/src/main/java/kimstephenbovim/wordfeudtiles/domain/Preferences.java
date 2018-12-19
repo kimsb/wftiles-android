@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Preferences implements Serializable {
 
-    private int localeIndex;
+    private int localeIndex = -1;
     private boolean viewOverview;
     private boolean sortVowelsConsonants;
 
