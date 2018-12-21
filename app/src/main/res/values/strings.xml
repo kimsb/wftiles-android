@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wordfeud Tiles</string>
+    <string name="app_name">WFTiles</string>
     <string name="title_game_detail">Game Detail</string>
     <string name="title_activity_login">Wordfeud Tiles</string>
 </resources>

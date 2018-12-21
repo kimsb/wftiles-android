@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
+    android:minHeight="90dp"
+    android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:background="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/opponentText"
         android:layout_width="0dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
         android:textColor="@color/textColor"
         android:textSize="16sp"
@@ -25,10 +26,9 @@
     <TextView
         android:id="@+id/languageText"
         android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginLeft="8dp"
         android:textColor="@color/textColor"
         android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/scoreText"
@@ -39,9 +39,9 @@
     <TextView
         android:id="@+id/scoreText"
         android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:textColor="@color/textColor"
         android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/lastMoveText"
@@ -52,10 +52,10 @@
     <TextView
         android:id="@+id/lastMoveText"
         android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginBottom="7dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="4dp"
         android:textColor="@color/textColor"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -75,12 +75,11 @@
     <TextView
         android:id="@+id/diffLabel"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textColor="@color/textColor"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="@+id/opponentImageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/opponentImageView" />
 
 </android.support.constraint.ConstraintLayout>

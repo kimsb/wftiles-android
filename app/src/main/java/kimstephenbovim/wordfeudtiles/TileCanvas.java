@@ -49,16 +49,13 @@ public class TileCanvas extends View {
         letterPaint.setColor(getResources().getColor(R.color.textColor));
         letterPaint.setTextSize(getResources().getDimension(R.dimen.tile_letter_font_size));
         letterPaint.setAntiAlias(true);
-        //letterPaint.setFakeBoldText(true);
         letterPaint.setStyle(FILL);
         letterPaint.setTextAlign(CENTER);
 
-        //scorePaint.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
         scorePaint.setTypeface(Typeface.SANS_SERIF);
         scorePaint.setColor(getResources().getColor(R.color.textColor));
         scorePaint.setTextSize(getResources().getDimension(R.dimen.tile_score_font_size));
         scorePaint.setAntiAlias(true);
-        //scorePaint.setFakeBoldText(true);
         scorePaint.setStyle(FILL);
         scorePaint.setTextAlign(RIGHT);
 
