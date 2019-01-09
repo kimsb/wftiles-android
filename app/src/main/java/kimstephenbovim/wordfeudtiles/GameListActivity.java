@@ -88,7 +88,7 @@ public class GameListActivity extends AppCompatActivity {
             Glide.with(this)
                     .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + WFTiles.instance.getUser().getId())
                     .apply(RequestOptions.circleCropTransform())
-                    .apply(RequestOptions.placeholderOf(R.drawable.arrow_back))
+                    .apply(RequestOptions.placeholderOf(R.drawable.circle))
                     .into(new SimpleTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource,
@@ -269,6 +269,7 @@ public class GameListActivity extends AppCompatActivity {
                 Glide.with(this.parentActivity)
                         .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
                         .apply(RequestOptions.circleCropTransform())
+                        .apply(RequestOptions.placeholderOf(R.drawable.circle))
                         .into(gameViewHolder.opponentImageView);
                 int diff = game.getPlayer().getScore() - game.getOpponent().getScore();
                 String diffText = (diff > 0 ? "+" : "") + diff;

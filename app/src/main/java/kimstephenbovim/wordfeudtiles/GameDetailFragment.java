@@ -74,6 +74,7 @@ public class GameDetailFragment extends Fragment {
         Glide.with(getActivity())
                 .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
                 .apply(RequestOptions.circleCropTransform())
+                .apply(RequestOptions.placeholderOf(R.drawable.circle))
                 .into((ImageView) header.findViewById(R.id.headerOpponentImageView));
 
         int diff = game.getPlayer().getScore() - game.getOpponent().getScore();
