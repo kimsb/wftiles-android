@@ -66,20 +66,20 @@ public class Game implements Serializable {
         }
         switch (lastMove.getMoveType()) {
             case "move":
-                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getLoggedInUser().getId()) {
                     return String.format(Texts.shared.getText("youPlayed"), lastMove.getMainWord(), lastMove.getPoints());
                 } else {
                     return String.format(Texts.shared.getText("theyPlayed"), opponentName, lastMove.getMainWord(), lastMove.getPoints());
                 }
             case "pass":
-                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getLoggedInUser().getId()) {
                     return Texts.shared.getText("youPassed");
                 } else {
                     return String.format(Texts.shared.getText("theyPassed"), opponentName);
 
                 }
             case "swap":
-                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getLoggedInUser().getId()) {
                     if (lastMove.getTileCount() == 1) {
                         return String.format(Texts.shared.getText("youSwappedOne"), lastMove.getTileCount());
                     }
@@ -91,7 +91,7 @@ public class Game implements Serializable {
                     return String.format(Texts.shared.getText("theySwapped"), opponentName, lastMove.getTileCount());
                 }
             case "resign":
-                if (lastMove.getUserId() == WFTiles.instance.getUser().getId()) {
+                if (lastMove.getUserId() == WFTiles.instance.getLoggedInUser().getId()) {
                     return Texts.shared.getText("youResigned");
                 } else {
                     return String.format(Texts.shared.getText("theyResigned"), opponentName);

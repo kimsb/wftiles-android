@@ -1,5 +1,6 @@
 package kimstephenbovim.wordfeudtiles;
 
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -25,11 +26,13 @@ import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
+import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
 
 public class GameDetailFragment extends Fragment {
 
     private Game game;
-    public long gameId;
+    public Long gameId;
     private boolean isCreated;
 
     public GameDetailFragment() {
@@ -67,14 +70,17 @@ public class GameDetailFragment extends Fragment {
         }
 
         linearLayout.removeAllViews();
+        if (gameId == null) {
+            return;
+        }
 
         View header = LayoutInflater.from(getActivity())
                 .inflate(R.layout.game_detail_header, linearLayout);
 
         Glide.with(getActivity())
-                .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                .load(WFTiles.instance.getLoggedInUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
                 .apply(RequestOptions.circleCropTransform())
-                .apply(RequestOptions.placeholderOf(R.drawable.circle))
+                .apply(RequestOptions.errorOf(R.drawable.circle))
                 .into((ImageView) header.findViewById(R.id.headerOpponentImageView));
 
         int diff = game.getPlayer().getScore() - game.getOpponent().getScore();
@@ -193,7 +199,18 @@ public class GameDetailFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEvent(LoginEvent loginEvent) {
-        ProgressDialogHandler.shared.getGame(getActivity(), gameId, false);
+        if (loginEvent.getLoginResult() == OK) {
+            if (gameId != null && WFTiles.instance.getGame(gameId) != null) {
+                ProgressDialogHandler.shared.getGame(getActivity(), gameId, false);
+            }
+        } else {
+            System.out.println("Login feiler");
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.putExtra(MESSAGE_SKIP_LOGIN, false);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            getActivity().finish();
+        }
     }
 
     private boolean isOnline() {

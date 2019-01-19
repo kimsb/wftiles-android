@@ -73,12 +73,13 @@ public class RestClient {
 
     private static void reLogin() {
         System.out.println("RE-logging in");
-        final User user = WFTiles.instance.getUser();
+        final User user = WFTiles.instance.getLoggedInUser();
 
         final String loginValue = "email".equals(user.getLoginMethod())
                 ? user.getEmail()
                 : user.getUsername();
 
+        WFTiles.instance.setLastAttemptedLogin(user);
         login(user.getLoginMethod(), loginValue, user.getPassword());
     }
 
@@ -103,12 +104,12 @@ public class RestClient {
                             break;
                     }
                 } else {
-                    EventBus.getDefault().post(new LoginEvent(OK));
                     User userLoggedIn = mapToUser(response.body().getLoginContent(), loginMethod, password);
-                    if (WFTiles.instance.getUser() != null && !WFTiles.instance.getUser().getUsername().equals(userLoggedIn.getUsername())) {
+                    if (WFTiles.instance.getLoggedInUser() != null && !WFTiles.instance.getLoggedInUser().getUsername().equals(userLoggedIn.getUsername())) {
                         WFTiles.instance.setGames(Collections.<Game>emptyList());
                     }
-                    WFTiles.instance.setUser(userLoggedIn);
+                    WFTiles.instance.addUser(userLoggedIn);
+                    EventBus.getDefault().post(new LoginEvent(OK));
                 }
             }
 

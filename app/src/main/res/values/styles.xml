@@ -12,7 +12,6 @@
     <style name="CustomPopupStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:listPreferredItemHeightSmall">40dp</item>
         <item name="android:dropDownVerticalOffset">4dp</item>
-
     </style>
 
     <style name="AppTheme.NoActionBar">

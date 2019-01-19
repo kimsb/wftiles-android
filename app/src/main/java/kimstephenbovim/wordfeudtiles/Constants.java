@@ -13,6 +13,7 @@ public class Constants {
 
     public static Constants shared = new Constants();
     static String MESSAGE_SKIP_LOGIN = "MESSAGE_SKIP_LOGIN";
+    static String MESSAGE_NO_LOGIN_SUGGESTION = "MESSAGE_NO_LOGIN_SUGGESTION";
     static String MESSAGE_GAME_ID = "MESSAGE_GAME_ID";
     static String MESSAGE_OPPONENT_NAME = "MESSAGE_OPPONENT_NAME";
     static String MESSAGE_IS_TWOPANE = "MESSAGE_IS_TWOPANE";

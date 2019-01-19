@@ -1,16 +1,21 @@
 package kimstephenbovim.wordfeudtiles;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NavUtils;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +37,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.domain.Game;
@@ -44,12 +50,14 @@ import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SHOW_TWOPANE_GAME;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
+import static kimstephenbovim.wordfeudtiles.DrawerMenu.initNavigationView;
 import static kimstephenbovim.wordfeudtiles.PreferencesMenu.initMenu;
 import static kimstephenbovim.wordfeudtiles.PreferencesMenu.onClicked;
 import static kimstephenbovim.wordfeudtiles.domain.GameRowType.HEADER;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
 
-public class GameListActivity extends AppCompatActivity {
+public class GameListActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private boolean isTwoPane;
     private List<Game> games;
@@ -68,6 +76,36 @@ public class GameListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
 
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        userSpecificData();
+
+        setupRecyclerView(WFTiles.instance.getGames());
+
+        ProgressDialogHandler.shared.getGames(this, true);
+    }
+
+    void refreshUser() {
+        games = new ArrayList<>();
+        selectedGameId = null;
+        if (gameDetailFragment != null) {
+            gameDetailFragment.gameId = null;
+            gameDetailFragment.updateView();
+            getSupportFragmentManager().beginTransaction().remove(gameDetailFragment).commit();
+            gameDetailFragment = null;
+        }
+        userSpecificData();
+    }
+
+    private void userSpecificData() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        initNavigationView(this, navigationView);
+
         if (findViewById(R.id.game_detail_container) != null) {
             isTwoPane = true;
             setAppbarTitleSpacing();
@@ -75,25 +113,26 @@ public class GameListActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            if (WFTiles.instance.getUser() != null) {
+            if (WFTiles.instance.getLoggedInUser() != null) {
                 if (isTwoPane && gameDetailFragment != null) {
-                    actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername()
+                    actionBar.setTitle(WFTiles.instance.getLoggedInUser().presentableFullUsername()
                             + appbarTitleSpacing
                             + gameDetailFragment.getOpponentUsername());
                 } else {
-                    actionBar.setTitle(WFTiles.instance.getUser().presentableFullUsername());
+                    actionBar.setTitle(WFTiles.instance.getLoggedInUser().presentableFullUsername());
                 }
             }
             actionBar.setDisplayHomeAsUpEnabled(true);
             Glide.with(this)
-                    .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + WFTiles.instance.getUser().getId())
+                    .asBitmap()
+                    .load(WFTiles.instance.getLoggedInUser().getAvatarRoot() + "/80/19801115")
                     .apply(RequestOptions.circleCropTransform())
-                    .apply(RequestOptions.placeholderOf(R.drawable.circle))
-                    .into(new SimpleTarget<Drawable>() {
+                    .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(@NonNull Drawable resource,
-                                                    @Nullable Transition<? super Drawable> transition) {
-                            actionBar.setHomeAsUpIndicator(resource);
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            float density = Resources.getSystem().getDisplayMetrics().density;
+                            resource = Bitmap.createScaledBitmap(resource, Math.round(80 * density), Math.round(80 * density), true);
+                            actionBar.setHomeAsUpIndicator(new BitmapDrawable(resource));
                         }
                     });
 
@@ -107,10 +146,6 @@ public class GameListActivity extends AppCompatActivity {
                 }
             });
         }
-
-        setupRecyclerView(WFTiles.instance.getGames());
-
-        ProgressDialogHandler.shared.getGames(this, true);
 
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(
@@ -133,7 +168,7 @@ public class GameListActivity extends AppCompatActivity {
                 }
             }
         }
-        if (!isTwoPane && gameDetailFragment!= null && games != null) {
+        if (!isTwoPane && gameDetailFragment != null && games != null) {
             for (Game game : games) {
                 if (game.getId() == gameDetailFragment.gameId) {
                     showGame(game);
@@ -146,7 +181,7 @@ public class GameListActivity extends AppCompatActivity {
     private void setAppbarTitleSpacing() {
         Paint paint = new Paint();
         paint.setTextSize(getResources().getDimension(R.dimen.appbar_textsize));
-        float playerNameWidth = paint.measureText(WFTiles.instance.getUser().presentableFullUsername());
+        float playerNameWidth = paint.measureText(WFTiles.instance.getLoggedInUser().presentableFullUsername());
         float spaceWidth = paint.measureText(" ");
 
         float opponentPosition = getResources().getDimension(R.dimen.twopane_opponent_position);
@@ -170,19 +205,22 @@ public class GameListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra(MESSAGE_SKIP_LOGIN, false);
-            NavUtils.navigateUpTo(this, intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            return true;
-        }
         onClicked(item, this);
         setupRecyclerView(games);
         if (gameDetailFragment != null) {
             gameDetailFragment.updateView();
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            drawer.openDrawer(GravityCompat.START);
+        }
     }
 
     public void setupRecyclerView(List<Game> games) {
@@ -202,7 +240,7 @@ public class GameListActivity extends AppCompatActivity {
                 .replace(R.id.game_detail_container, fragment, "her_er_min_tag")
                 .commit();
 
-        getSupportActionBar().setTitle(WFTiles.instance.getUser().presentableFullUsername()
+        getSupportActionBar().setTitle(WFTiles.instance.getLoggedInUser().presentableFullUsername()
                 + appbarTitleSpacing
                 + game.getOpponent().presentableUsername());
         ProgressDialogHandler.shared.getGames(this, false);
@@ -267,9 +305,9 @@ public class GameListActivity extends AppCompatActivity {
                 Game game = gameRow.getGame();
 
                 Glide.with(this.parentActivity)
-                        .load(WFTiles.instance.getUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
+                        .load(WFTiles.instance.getLoggedInUser().getAvatarRoot() + "/80/" + game.getOpponent().getId())
                         .apply(RequestOptions.circleCropTransform())
-                        .apply(RequestOptions.placeholderOf(R.drawable.circle))
+                        .apply(RequestOptions.errorOf(R.drawable.circle))
                         .into(gameViewHolder.opponentImageView);
                 int diff = game.getPlayer().getScore() - game.getOpponent().getScore();
                 String diffText = (diff > 0 ? "+" : "") + diff;
@@ -385,6 +423,11 @@ public class GameListActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        return DrawerMenu.onNavigationItemSelected(this, item);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GamesLoadedEvent gamesLoadedEvent) {
         ProgressDialogHandler.shared.cancel();
@@ -399,13 +442,18 @@ public class GameListActivity extends AppCompatActivity {
         setupRecyclerView(loadedGames);
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(LoginEvent loginEvent) {
         if (loginEvent.getLoginResult() == OK) {
+            refreshUser();
             ProgressDialogHandler.shared.getGames(this, false);
         } else {
-            //TODO login har feilet, kan dette skje?
             System.out.println("Login feiler");
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra(MESSAGE_SKIP_LOGIN, false);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            finish();
         }
     }
 

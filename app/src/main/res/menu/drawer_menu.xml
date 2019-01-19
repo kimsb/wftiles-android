@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MenuTitle"
+    tools:showIn="navigation_view">
+
+    <group android:id="@+id/logout_group">
+        <item
+            android:id="@+id/logout"/>
+    </group>
+
+    <group android:id="@+id/users_group">
+        <item
+            android:id="@+id/user_1"/>
+        <item
+            android:id="@+id/user_2"/>
+        <item
+            android:id="@+id/user_3"/>
+        <item
+            android:id="@+id/user_4"/>
+        <item
+            android:id="@+id/user_5"/>
+        <item
+            android:id="@+id/user_6"/>
+        <item
+            android:id="@+id/user_7"/>
+        <item
+            android:id="@+id/user_8"/>
+        <item
+            android:id="@+id/user_9"/>
+        <item
+            android:id="@+id/add"
+            android:icon="@drawable/plus_icon" />
+    </group>
+
+</menu>

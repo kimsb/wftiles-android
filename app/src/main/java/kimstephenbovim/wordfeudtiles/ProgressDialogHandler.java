@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Handler;
 
+import kimstephenbovim.wordfeudtiles.domain.User;
 import kimstephenbovim.wordfeudtiles.rest.RestClient;
 
 import static android.os.Looper.getMainLooper;
@@ -66,6 +67,15 @@ public class ProgressDialogHandler {
         RestClient.getGame(gameId, attemptRelogin);
         restCallStarted = currentTimeMillis();
         show(activity, Texts.shared.getText("pleaseWait"));
+    }
+
+    public void login(Activity activity, User user) {
+        final String loginValue = "email".equals(user.getLoginMethod())
+                ? user.getEmail()
+                : user.getUsername();
+
+        WFTiles.instance.setLastAttemptedLogin(user);
+        login(activity, user.getLoginMethod(), loginValue, user.getPassword());
     }
 
     public void login(Activity activity, String loginMethod, String loginValue, String password) {

@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import kimstephenbovim.wordfeudtiles.domain.User;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 
+import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_NO_LOGIN_SUGGESTION;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 
 public class LoginActivity extends AppCompatActivity {
@@ -35,11 +36,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (getIntent().getBooleanExtra(MESSAGE_SKIP_LOGIN, true)
-                && WFTiles.instance.getUser() != null) {
+                && WFTiles.instance.getLoggedInUser() != null) {
             System.out.println("Har lagret bruker, går rett til GameList");
             LoginActivity loginActivity = LoginActivity.this;
             Intent intent = new Intent(loginActivity, GameListActivity.class);
             loginActivity.startActivity(intent);
+            finish();
         }
 
         setTheme(R.style.CustomToolbarStyle);
@@ -64,8 +66,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordView = findViewById(R.id.login_password);
         passwordView.setImeActionLabel(Texts.shared.getText("login"), 6);
 
-        final User user = WFTiles.instance.getUser();
-        if (user == null) {
+        final User user = WFTiles.instance.getLastAttemptedLogin();
+        if (getIntent().getBooleanExtra(MESSAGE_NO_LOGIN_SUGGESTION, false) || user == null) {
             usernameView.setHint(Texts.shared.getText("usernameEmail"));
             passwordView.setHint(Texts.shared.getText("password"));
             usernameView.requestFocus();
@@ -183,6 +185,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(loginActivity, GameListActivity.class);
                 loginActivity.startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                finish();
                 break;
             case WRONG_PASSWORD:
                 System.out.println("Feil passord");

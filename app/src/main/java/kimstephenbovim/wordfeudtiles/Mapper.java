@@ -21,10 +21,10 @@ import static java.util.Arrays.asList;
 public class Mapper {
 
     public static Game mapToGame(final GameDTO gameDTO) {
-        boolean playersTurn = gameDTO.getPlayers().get(gameDTO.getCurrentPlayer()).getId() == WFTiles.instance.getUser().getId();
+        boolean playersTurn = gameDTO.getPlayers().get(gameDTO.getCurrentPlayer()).getId() == WFTiles.instance.getLoggedInUser().getId();
 
         Player loggedInPlayer, opponent;
-        if (gameDTO.getPlayers().get(0).getId() == WFTiles.instance.getUser().getId()) {
+        if (gameDTO.getPlayers().get(0).getId() == WFTiles.instance.getLoggedInUser().getId()) {
             loggedInPlayer = mapToPlayer(gameDTO.getPlayers().get(0), gameDTO.getRuleset());
             opponent = mapToPlayer(gameDTO.getPlayers().get(1), gameDTO.getRuleset());
         } else {
