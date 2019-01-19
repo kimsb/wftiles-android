@@ -125,7 +125,7 @@ public class GameListActivity extends AppCompatActivity
             actionBar.setDisplayHomeAsUpEnabled(true);
             Glide.with(this)
                     .asBitmap()
-                    .load(WFTiles.instance.getLoggedInUser().getAvatarRoot() + "/80/19801115")
+                    .load(WFTiles.instance.getLoggedInUser().getAvatarRoot() + "/80/" + WFTiles.instance.getLoggedInUser().getId())
                     .apply(RequestOptions.circleCropTransform())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
