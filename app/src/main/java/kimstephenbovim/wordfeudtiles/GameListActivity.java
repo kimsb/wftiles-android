@@ -210,6 +210,8 @@ public class GameListActivity extends AppCompatActivity
         if (gameDetailFragment != null) {
             gameDetailFragment.updateView();
         }
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().findItem(R.id.logout).setTitle(Texts.shared.getText("logout"));
         return false;
     }
 
