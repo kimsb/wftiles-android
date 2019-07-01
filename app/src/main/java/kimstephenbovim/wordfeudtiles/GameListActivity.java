@@ -45,6 +45,7 @@ import kimstephenbovim.wordfeudtiles.domain.GameRow;
 import kimstephenbovim.wordfeudtiles.event.GamesLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 
+import static kimstephenbovim.wordfeudtiles.Constants.ID_GAME_LIST_ACTIVITY;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
@@ -86,7 +87,7 @@ public class GameListActivity extends AppCompatActivity
 
         setupRecyclerView(WFTiles.instance.getGames());
 
-        ProgressDialogHandler.shared.getGames(this, true);
+        ProgressDialogHandler.shared.getGames(ID_GAME_LIST_ACTIVITY, this, true);
     }
 
     void refreshUser() {
@@ -152,9 +153,9 @@ public class GameListActivity extends AppCompatActivity
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        ProgressDialogHandler.shared.getGames(GameListActivity.this, true);
+                        ProgressDialogHandler.shared.getGames(ID_GAME_LIST_ACTIVITY, GameListActivity.this, true);
                         if (isTwoPane && selectedGameId != null) {
-                            ProgressDialogHandler.shared.getGame(GameListActivity.this, selectedGameId, false);
+                            ProgressDialogHandler.shared.getGame(ID_GAME_LIST_ACTIVITY, GameListActivity.this, selectedGameId, false);
                         }
                     }
                 }
@@ -245,7 +246,7 @@ public class GameListActivity extends AppCompatActivity
         getSupportActionBar().setTitle(WFTiles.instance.getLoggedInUser().presentableFullUsername()
                 + appbarTitleSpacing
                 + game.getOpponent().presentableUsername());
-        ProgressDialogHandler.shared.getGames(this, false);
+        ProgressDialogHandler.shared.getGames(ID_GAME_LIST_ACTIVITY, this, false);
     }
 
     void showGame(Game game) {
@@ -386,9 +387,9 @@ public class GameListActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
         if (isCreated) {
-            ProgressDialogHandler.shared.getGames(this, true);
+            ProgressDialogHandler.shared.getGames(ID_GAME_LIST_ACTIVITY, this, true);
             if (isTwoPane && selectedGameId != null) {
-                ProgressDialogHandler.shared.getGame(this, selectedGameId, false);
+                ProgressDialogHandler.shared.getGame(ID_GAME_LIST_ACTIVITY, this, selectedGameId, false);
             }
         } else {
             isCreated = true;
@@ -398,20 +399,20 @@ public class GameListActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        ProgressDialogHandler.shared.dismiss();
+        ProgressDialogHandler.shared.dismiss(ID_GAME_LIST_ACTIVITY);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ProgressDialogHandler.shared.dismiss();
+        ProgressDialogHandler.shared.dismiss(ID_GAME_LIST_ACTIVITY);
     }
 
     @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        ProgressDialogHandler.shared.dismiss();
+        ProgressDialogHandler.shared.dismiss(ID_GAME_LIST_ACTIVITY);
     }
 
     private void stopRefreshing() {
@@ -448,7 +449,7 @@ public class GameListActivity extends AppCompatActivity
     public void onMessageEvent(LoginEvent loginEvent) {
         if (loginEvent.getLoginResult() == OK) {
             refreshUser();
-            ProgressDialogHandler.shared.getGames(this, false);
+            ProgressDialogHandler.shared.getGames(ID_GAME_LIST_ACTIVITY, this, false);
         } else {
             System.out.println("Login feiler");
             Intent intent = new Intent(this, LoginActivity.class);

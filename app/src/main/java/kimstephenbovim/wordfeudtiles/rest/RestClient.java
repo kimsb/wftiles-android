@@ -75,6 +75,11 @@ public class RestClient {
         System.out.println("RE-logging in");
         final User user = WFTiles.instance.getLoggedInUser();
 
+            if (user == null) {
+            EventBus.getDefault().post(new LoginEvent(FAILED));
+            return;
+        }
+
         final String loginValue = "email".equals(user.getLoginMethod())
                 ? user.getEmail()
                 : user.getUsername();

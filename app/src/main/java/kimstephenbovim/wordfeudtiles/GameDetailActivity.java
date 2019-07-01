@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import static kimstephenbovim.wordfeudtiles.Constants.ID_GAME_DETAIL_ACTIVITY;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_IS_TWOPANE;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_OPPONENT_NAME;
@@ -85,7 +86,7 @@ public class GameDetailActivity extends AppCompatActivity {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        ProgressDialogHandler.shared.getGame(GameDetailActivity.this, getIntent().getLongExtra(MESSAGE_GAME_ID, 0), true);
+                        ProgressDialogHandler.shared.getGame(ID_GAME_DETAIL_ACTIVITY, GameDetailActivity.this, getIntent().getLongExtra(MESSAGE_GAME_ID, 0), true);
                     }
                 }
         );
@@ -120,19 +121,19 @@ public class GameDetailActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ProgressDialogHandler.shared.dismiss();
+        ProgressDialogHandler.shared.dismiss(ID_GAME_DETAIL_ACTIVITY);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ProgressDialogHandler.shared.dismiss();
+        ProgressDialogHandler.shared.dismiss(ID_GAME_DETAIL_ACTIVITY);
     }
 
     @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        ProgressDialogHandler.shared.dismiss();
+        ProgressDialogHandler.shared.dismiss(ID_GAME_DETAIL_ACTIVITY);
     }
 }

@@ -25,6 +25,7 @@ import kimstephenbovim.wordfeudtiles.event.GameLoadedEvent;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
+import static kimstephenbovim.wordfeudtiles.Constants.ID_GAME_LIST_ACTIVITY;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_GAME_ID;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 import static kimstephenbovim.wordfeudtiles.event.LoginResult.OK;
@@ -51,7 +52,7 @@ public class GameDetailFragment extends Fragment {
         gameId = getArguments().getLong(MESSAGE_GAME_ID);
         game = WFTiles.instance.getGame(gameId);
 
-        ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
+        ProgressDialogHandler.shared.getGame(ID_GAME_LIST_ACTIVITY, getActivity(), gameId, true);
         FragmentActivity activity = getActivity();
         if (activity instanceof GameDetailActivity) {
             GameDetailActivity gameDetailActivity = (GameDetailActivity) activity;
@@ -163,7 +164,7 @@ public class GameDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (isCreated) {
-            ProgressDialogHandler.shared.getGame(getActivity(), gameId, true);
+            ProgressDialogHandler.shared.getGame(ID_GAME_LIST_ACTIVITY, getActivity(), gameId, true);
         } else {
             isCreated = true;
         }
@@ -184,7 +185,7 @@ public class GameDetailFragment extends Fragment {
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(GameLoadedEvent gameLoadedEvent) {
         ProgressDialogHandler.shared.cancel();
         stopRefreshing();
@@ -197,11 +198,11 @@ public class GameDetailFragment extends Fragment {
         updateView();
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(LoginEvent loginEvent) {
         if (loginEvent.getLoginResult() == OK) {
             if (gameId != null && WFTiles.instance.getGame(gameId) != null) {
-                ProgressDialogHandler.shared.getGame(getActivity(), gameId, false);
+                ProgressDialogHandler.shared.getGame(ID_GAME_LIST_ACTIVITY, getActivity(), gameId, false);
             }
         } else {
             System.out.println("Login feiler");

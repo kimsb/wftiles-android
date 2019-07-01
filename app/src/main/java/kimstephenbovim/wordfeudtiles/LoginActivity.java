@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import kimstephenbovim.wordfeudtiles.domain.User;
 import kimstephenbovim.wordfeudtiles.event.LoginEvent;
 
+import static kimstephenbovim.wordfeudtiles.Constants.ID_LOGIN_ACTIVITY;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_NO_LOGIN_SUGGESTION;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 
@@ -142,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
 
             System.out.println("Attempting login");
 
-            ProgressDialogHandler.shared.login(LoginActivity.this, mEmail.contains("@") ? "email" : "username", mEmail, mPassword);
+            ProgressDialogHandler.shared.login(ID_LOGIN_ACTIVITY, LoginActivity.this, mEmail.contains("@") ? "email" : "username", mEmail, mPassword);
 
             // TODO: register the new account here.
             return true;
@@ -173,6 +174,25 @@ public class LoginActivity extends AppCompatActivity {
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ProgressDialogHandler.shared.dismiss(ID_LOGIN_ACTIVITY);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ProgressDialogHandler.shared.dismiss(ID_LOGIN_ACTIVITY);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        ProgressDialogHandler.shared.dismiss(ID_LOGIN_ACTIVITY);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

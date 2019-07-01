@@ -13,11 +13,15 @@ import static java.lang.System.currentTimeMillis;
 public class ProgressDialogHandler {
 
     public static ProgressDialogHandler shared = new ProgressDialogHandler();
+    private boolean startedDismissing;
     private Handler handler = new Handler(getMainLooper());
     private ProgressDialog progressDialog;
     private long restCallStarted, progressDialogShown;
+    private String currentActivityId;
 
-    private void show(final Activity activity, final String message) {
+    private void show(final String activityId, final Activity activity, final String message) {
+        currentActivityId = activityId;
+        startedDismissing = false;
         handler.removeCallbacksAndMessages(null);
         final boolean isShowing = progressDialog != null && progressDialog.isShowing();
 
@@ -44,43 +48,50 @@ public class ProgressDialogHandler {
     }
 
     public void cancel() {
-        handler.removeCallbacksAndMessages(null);
         handler.postDelayed(new Runnable() {
             public void run() {
-                progressDialog.dismiss();
+                if (!startedDismissing && progressDialog != null) {
+                    startedDismissing = true;
+                    handler.removeCallbacksAndMessages(null);
+                    progressDialog.dismiss();
+                }
             }
         }, progressDialog.isShowing() ? Math.max(0, 500 - (currentTimeMillis() - progressDialogShown)) : 0);
     }
 
-    public void dismiss() {
-        handler.removeCallbacksAndMessages(null);
-        progressDialog.dismiss();
+    public void dismiss(String activityId) {
+        if (activityId.equals(currentActivityId)
+        && !startedDismissing && progressDialog != null) {
+            startedDismissing = true;
+            handler.removeCallbacksAndMessages(null);
+            progressDialog.dismiss();
+        }
     }
 
-    public void getGames(Activity activity, boolean attemptRelogin) {
+    public void getGames(String activityId, Activity activity, boolean attemptRelogin) {
         RestClient.getGames(attemptRelogin);
         restCallStarted = currentTimeMillis();
-        show(activity, Texts.shared.getText("pleaseWait"));
+        show(activityId, activity, Texts.shared.getText("pleaseWait"));
     }
 
-    public void getGame(Activity activity, long gameId, boolean attemptRelogin) {
+    public void getGame(String activityId, Activity activity, long gameId, boolean attemptRelogin) {
         RestClient.getGame(gameId, attemptRelogin);
         restCallStarted = currentTimeMillis();
-        show(activity, Texts.shared.getText("pleaseWait"));
+        show(activityId, activity, Texts.shared.getText("pleaseWait"));
     }
 
-    public void login(Activity activity, User user) {
+    public void login(String activityId, Activity activity, User user) {
         final String loginValue = "email".equals(user.getLoginMethod())
                 ? user.getEmail()
                 : user.getUsername();
 
         WFTiles.instance.setLastAttemptedLogin(user);
-        login(activity, user.getLoginMethod(), loginValue, user.getPassword());
+        login(activityId, activity, user.getLoginMethod(), loginValue, user.getPassword());
     }
 
-    public void login(Activity activity, String loginMethod, String loginValue, String password) {
+    public void login(String activityId, Activity activity, String loginMethod, String loginValue, String password) {
         RestClient.login(loginMethod, loginValue, password);
         restCallStarted = currentTimeMillis();
-        show(activity, Texts.shared.getText("loggingIn"));
+        show(activityId, activity, Texts.shared.getText("loggingIn"));
     }
 }

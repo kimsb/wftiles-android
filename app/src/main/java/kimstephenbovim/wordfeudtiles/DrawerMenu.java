@@ -22,6 +22,7 @@ import java.util.List;
 
 import kimstephenbovim.wordfeudtiles.domain.User;
 
+import static kimstephenbovim.wordfeudtiles.Constants.ID_GAME_LIST_ACTIVITY;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_NO_LOGIN_SUGGESTION;
 import static kimstephenbovim.wordfeudtiles.Constants.MESSAGE_SKIP_LOGIN;
 
@@ -78,7 +79,7 @@ class DrawerMenu {
                 WFTiles.instance.logoutCurrentUser();
                 User nextUser = WFTiles.instance.getLoggedInUser();
                 if (nextUser != null) {
-                    ProgressDialogHandler.shared.login(gameListActivity, nextUser);
+                    ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, nextUser);
                 } else {
                     Intent intent = new Intent(gameListActivity, LoginActivity.class);
                     intent.putExtra(MESSAGE_SKIP_LOGIN, false);
@@ -97,31 +98,31 @@ class DrawerMenu {
                 gameListActivity.finish();
                 return true;
             case R.id.user_1:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(1));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(1));
                 break;
             case R.id.user_2:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(2));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(2));
                 break;
             case R.id.user_3:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(3));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(3));
                 break;
             case R.id.user_4:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(4));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(4));
                 break;
             case R.id.user_5:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(5));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(5));
                 break;
             case R.id.user_6:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(6));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(6));
                 break;
             case R.id.user_7:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(7));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(7));
                 break;
             case R.id.user_8:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(8));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(8));
                 break;
             case R.id.user_9:
-                ProgressDialogHandler.shared.login(gameListActivity, WFTiles.instance.getUsers().get(9));
+                ProgressDialogHandler.shared.login(ID_GAME_LIST_ACTIVITY, gameListActivity, WFTiles.instance.getUsers().get(9));
                 break;
         }
         DrawerLayout drawer = gameListActivity.findViewById(R.id.drawer_layout);
