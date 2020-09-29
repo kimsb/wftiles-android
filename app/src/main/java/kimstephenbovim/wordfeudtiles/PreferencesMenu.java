@@ -1,11 +1,12 @@
 package kimstephenbovim.wordfeudtiles;
 
 import android.content.Context;
-import android.support.v4.view.MenuCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+
+import androidx.core.view.MenuCompat;
 
 public class PreferencesMenu {
 

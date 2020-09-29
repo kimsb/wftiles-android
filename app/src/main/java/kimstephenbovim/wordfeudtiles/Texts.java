@@ -1,7 +1,8 @@
 package kimstephenbovim.wordfeudtiles;
 
 import android.content.res.Resources;
-import android.support.v4.os.ConfigurationCompat;
+
+import androidx.core.os.ConfigurationCompat;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -12,8 +12,7 @@
     android:showDividers="middle"
     tools:context=".GameListActivity">
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/game_list"
         android:name="kimstephenbovim.wordfeudtiles.GameListFragment"
         android:layout_width="@dimen/two_pane_list_width"
@@ -23,7 +22,7 @@
         tools:context="kimstephenbovim.wordfeudtiles.GameListActivity"
         tools:listitem="@layout/game_list_content" />
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -37,6 +36,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>
