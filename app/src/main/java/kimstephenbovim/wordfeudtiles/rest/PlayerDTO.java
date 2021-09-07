@@ -9,7 +9,7 @@ public class PlayerDTO {
     @Json(name = "username")
     private String username;
     @Json(name = "avatar_updated")
-    private long avatarUpdated;
+    private double avatarUpdated;
     @Json(name = "is_local")
     private Boolean isLocal;
     @Json(name = "fb_last_name")
@@ -31,7 +31,7 @@ public class PlayerDTO {
         return username;
     }
 
-    public long getAvatarUpdated() {
+    public double getAvatarUpdated() {
         return avatarUpdated;
     }
 

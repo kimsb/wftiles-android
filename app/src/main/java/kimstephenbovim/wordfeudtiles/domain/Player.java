@@ -13,14 +13,14 @@ public class Player implements Serializable {
     private String username;
     private long id;
     private int score;
-    private long avatarUpdated;
+    private double avatarUpdated;
     private String fbFirstName;
     private String fbMiddleName;
     private String fbLastName;
     private List<String> rack;
     private int ruleset;
 
-    public Player(String username, long id, int score, long avatarUpdated, String fbFirstName,
+    public Player(String username, long id, int score, double avatarUpdated, String fbFirstName,
                   String fbMiddleName, String fbLastName, List<String> rack, int ruleset) {
         this.username = username;
         this.id = id;
